@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-gray-900 text-white antialiased overflow-hidden;
+        font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'Times New Roman', serif;
+    }
+}
+
+@layer utilities {
+    .scrollbar-hide {
+        /* IE and Edge */
+        -ms-overflow-style: none;
+        /* Firefox */
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        /* Chrome, Safari and Opera */
+        display: none;
+    }
+    
+    .embla__slide {
+        flex: 0 0 60px;
+        min-height: 0;
+    }
+}
