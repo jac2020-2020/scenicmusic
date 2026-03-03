@@ -6,10 +6,12 @@ import { MoodStep } from '@/features/mood/MoodStep';
 import { UploadStep } from '@/features/upload/UploadStep';
 import { PlaybackStep } from '@/features/player/PlaybackStep';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
+import { useAmbientLayers } from '@/hooks/useAmbientLayers';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function App() {
     const { currentStep } = useEnvironmentStore();
+    useAmbientLayers();
 
     return (
         <div className="relative min-h-screen w-full text-white overflow-hidden selection:bg-white/30">

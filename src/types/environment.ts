@@ -10,4 +10,8 @@ export interface EnvironmentState {
     mood?: Mood;
     photoUrl?: string;
     tags?: string[];
+    
+    // 音量控制 (0.0 - 1.0)
+    volumes: Record<string, number>;
+    musicVolume: number;
 }

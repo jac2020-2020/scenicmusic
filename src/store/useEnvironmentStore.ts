@@ -11,6 +11,13 @@ interface EnvironmentStore extends EnvironmentState {
     setMood: (mood: Mood | undefined) => void;
     setPhotoUrl: (url: string) => void;
     setTags: (tags: string[]) => void;
+    
+    // 音量设置
+    volumes: Record<string, number>;
+    setVolume: (id: string, volume: number) => void;
+    musicVolume: number;
+    setMusicVolume: (volume: number) => void;
+
     nextStep: () => void;
     prevStep: () => void;
     setStep: (step: Step) => void;
@@ -25,16 +32,27 @@ export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
     mood: undefined,
     photoUrl: undefined,
     tags: undefined,
+    
+    // 默认音量设定
+    volumes: {},
+    musicVolume: 0.7,
+
     setWeather: (weather) => set({ weather }),
     setTime: (time) => set({ time }),
     setScene: (scene) => set({ scene }),
     setMood: (mood) => set({ mood }),
     setPhotoUrl: (photoUrl) => set({ photoUrl }),
     setTags: (tags) => set({ tags }),
+    
+    setVolume: (id, volume) => set((state) => ({
+        volumes: { ...state.volumes, [id]: volume }
+    })),
+    setMusicVolume: (musicVolume) => set({ musicVolume }),
+
     nextStep: () => set((state) => ({ currentStep: Math.min(state.currentStep + 1, 5) as Step })),
     prevStep: () => set((state) => ({ currentStep: Math.max(state.currentStep - 1, 1) as Step })),
     setStep: (step) => set({ currentStep: step }),
-    resetToHome: () => set({
+    resetToHome: () => set((state) => ({
         currentStep: 1,
         weather: '晴天',
         time: '正午',
@@ -42,6 +60,8 @@ export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
         mood: undefined,
         photoUrl: undefined,
         tags: undefined,
-    }),
+        // 重置时保留用户设置的音量，或根据需求重置
+        // 这里选择保留，所以不覆盖 volume 状态
+    })),
 }));
 

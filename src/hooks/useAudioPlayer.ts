@@ -36,6 +36,13 @@ export const useAudioPlayer = ({
     const [duration, setDuration] = useState(0);
     const [volume, setVolumeState] = useState(clamp(initialVolume, 0, 1));
 
+    // 新增：允许外部改变 volume 时同步到 audio 元素，并忽略正在进行的淡入淡出（如果有必要）
+    useEffect(() => {
+        if (audioRef.current && audioRef.current.volume !== volume) {
+            audioRef.current.volume = volume;
+        }
+    }, [volume]);
+
     const stopFade = useCallback(() => {
         if (fadeRafRef.current !== null) {
             window.cancelAnimationFrame(fadeRafRef.current);
@@ -82,7 +89,7 @@ export const useAudioPlayer = ({
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('ended', handleEnded);
         };
-    }, [src, stopFade, volume]);
+    }, [src, stopFade]);
 
     const fadeTo = useCallback((target: number) => {
         const audio = audioRef.current;
