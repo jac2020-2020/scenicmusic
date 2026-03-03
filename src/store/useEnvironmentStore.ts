@@ -13,6 +13,7 @@ interface EnvironmentStore extends EnvironmentState {
     nextStep: () => void;
     prevStep: () => void;
     setStep: (step: Step) => void;
+    resetToHome: () => void;
 }
 
 export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
@@ -30,5 +31,13 @@ export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
     nextStep: () => set((state) => ({ currentStep: Math.min(state.currentStep + 1, 4) as Step })),
     prevStep: () => set((state) => ({ currentStep: Math.max(state.currentStep - 1, 1) as Step })),
     setStep: (step) => set({ currentStep: step }),
+    resetToHome: () => set({
+        currentStep: 1,
+        weather: '晴天',
+        time: '正午',
+        scene: '沉浸阅读',
+        photoUrl: undefined,
+        tags: undefined,
+    }),
 }));
 

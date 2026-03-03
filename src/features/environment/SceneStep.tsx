@@ -21,13 +21,11 @@ export const SceneStep: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
-            className='flex flex-col w-full max-w-5xl mx-auto'
+            className='flex flex-col w-full max-w-5xl mx-auto items-center'
         >
-            <div className='flex w-full max-w-4xl justify-center items-center mb-8 px-16 md:px-24 relative'>
-                <h2 className='absolute left-1/2 top-1/2 translate-x-[88px] -translate-y-1/2 text-xl md:text-2xl font-medium tracking-[0.18em] text-white/82 pointer-events-none z-30 px-3'>
-                    何处？
-                </h2>
-                <div className='absolute left-[92px] md:left-[110px] top-1/2 -translate-y-1/2 text-[11px] font-medium text-white/45 tracking-[0.28em] [writing-mode:vertical-rl] [text-orientation:upright]'>
+            {/* 所有屏幕：并排布局 */}
+            <div className='flex w-full max-w-4xl justify-center items-center mb-6 md:mb-8 px-4 sm:px-8 md:px-24 relative'>
+                <div className='absolute left-1 sm:left-4 md:left-[80px] top-1/2 -translate-y-1/2 text-[9px] sm:text-[10px] md:text-[11px] font-medium text-white/45 tracking-[0.2em] sm:tracking-[0.28em] [writing-mode:vertical-rl] [text-orientation:upright]'>
                     SCENE
                 </div>
 
@@ -39,8 +37,15 @@ export const SceneStep: React.FC = () => {
                     options={SCENE_OPTIONS}
                     value={scene}
                     onChange={setScene}
-                    className='w-full -ml-16 md:-ml-24'
+                    className='w-full scale-[0.8] sm:scale-90 md:scale-100 -ml-8 sm:-ml-16 md:-ml-24'
                 />
+
+                {/* 此地文字 - 纵排，上下有小竖线 */}
+                <div className='ml-2 sm:ml-4 md:ml-8 pointer-events-none flex flex-col items-center'>
+                    <div className='w-px h-4 bg-white/40 mb-3' />
+                    <span className='hetian-font text-base sm:text-lg md:text-xl text-white/80 [writing-mode:vertical-rl] tracking-widest'>此地</span>
+                    <div className='w-px h-4 bg-white/40 mt-3' />
+                </div>
             </div>
 
             <div className='flex items-center justify-center gap-6'>
@@ -49,10 +54,10 @@ export const SceneStep: React.FC = () => {
                     onClick={prevStep}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    className='w-16 h-16 rounded-full border border-white/70 bg-white/10 backdrop-blur-sm flex items-center justify-center text-white shadow-[0_0_20px_rgba(255,255,255,0.22)]'
+                    className='w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/15 hover:bg-white/25 text-white/90 backdrop-blur-xl border border-white/40 hover:border-white/60 flex items-center justify-center shadow-[0_4px_24px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_32px_rgba(255,255,255,0.2)] transition-all'
                     aria-label='返回上一步'
                 >
-                    <ArrowLeft size={24} />
+                    <ArrowLeft size={22} className='sm:w-6 sm:h-6' />
                 </motion.button>
 
                 <motion.button
@@ -60,10 +65,10 @@ export const SceneStep: React.FC = () => {
                     onClick={nextStep}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    className='w-16 h-16 rounded-full border border-white/70 bg-white/10 backdrop-blur-sm flex items-center justify-center text-white shadow-[0_0_20px_rgba(255,255,255,0.22)]'
+                    className='w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/15 hover:bg-white/25 text-white/90 backdrop-blur-xl border border-white/40 hover:border-white/60 flex items-center justify-center shadow-[0_4px_24px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_32px_rgba(255,255,255,0.2)] transition-all'
                     aria-label='下一步'
                 >
-                    <ArrowRight size={24} />
+                    <ArrowRight size={22} className='sm:w-6 sm:h-6' />
                 </motion.button>
             </div>
         </motion.div>

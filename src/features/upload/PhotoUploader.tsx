@@ -284,8 +284,9 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             : '-mt-24 md:-mt-20 flex items-center justify-center gap-3';
 
         const buttonBaseClassName =
-            'w-11 h-11 rounded-xl bg-white/20 text-white flex items-center justify-center ' +
-            'transition-colors hover:bg-white/30';
+            'w-11 h-11 rounded-xl bg-white/15 hover:bg-white/25 text-white/90 backdrop-blur-xl ' +
+            'border border-white/30 hover:border-white/50 flex items-center justify-center ' +
+            'shadow-[0_4px_16px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_24px_rgba(255,255,255,0.18)] transition-all';
 
         const isConfirmMode = pendingFile !== null;
 
@@ -303,7 +304,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
                         <motion.button
                             type='button'
                             onClick={handleConfirmSelection}
-                            className='w-11 h-11 rounded-xl bg-gray-500/55 text-white flex items-center justify-center transition-colors hover:bg-gray-400/65'
+                            className='w-11 h-11 rounded-xl bg-emerald-500/30 hover:bg-emerald-500/45 text-white backdrop-blur-xl border border-emerald-400/40 hover:border-emerald-400/60 flex items-center justify-center shadow-[0_4px_16px_rgba(16,185,129,0.2)] hover:shadow-[0_4px_24px_rgba(16,185,129,0.35)] transition-all'
                             aria-label='确认上传'
                             whileHover={{ y: -1.5, scale: 1.03 }}
                             whileTap={{ scale: 0.95 }}
@@ -314,7 +315,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
                         <motion.button
                             type='button'
                             onClick={handleRetrySelection}
-                            className='w-11 h-11 rounded-xl bg-gray-500/55 text-white flex items-center justify-center transition-colors hover:bg-gray-400/65'
+                            className='w-11 h-11 rounded-xl bg-white/15 hover:bg-white/25 text-white/90 backdrop-blur-xl border border-white/30 hover:border-white/50 flex items-center justify-center shadow-[0_4px_16px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_24px_rgba(255,255,255,0.18)] transition-all'
                             aria-label='重试'
                             whileHover={{ y: -1.5, scale: 1.03 }}
                             whileTap={{ scale: 0.95 }}
@@ -351,8 +352,10 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
                             type='button'
                             onClick={handleRotateFrame}
                             className={cn(
-                                'w-11 h-11 rounded-xl text-white flex items-center justify-center transition-colors',
-                                isLandscape ? 'bg-white/35' : 'bg-white/20 hover:bg-white/30'
+                                'w-11 h-11 rounded-xl text-white/90 flex items-center justify-center backdrop-blur-xl border transition-all',
+                                isLandscape
+                                    ? 'bg-white/30 border-white/50 shadow-[0_4px_20px_rgba(255,255,255,0.2)]'
+                                    : 'bg-white/15 border-white/30 hover:bg-white/25 hover:border-white/50 shadow-[0_4px_16px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_24px_rgba(255,255,255,0.18)]'
                             )}
                             aria-label='旋转镜头框'
                             whileHover={{ y: -1.5, scale: 1.03 }}

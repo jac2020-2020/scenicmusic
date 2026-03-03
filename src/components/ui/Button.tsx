@@ -9,12 +9,12 @@ interface ButtonProps extends HTMLMotionProps<'button'> {
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant = 'primary', size = 'md', children, ...props }, ref) => {
-        const baseStyles = 'inline-flex items-center justify-center rounded-xl font-medium transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none';
-        
+        const baseStyles = 'inline-flex items-center justify-center rounded-xl font-normal transition-all focus:outline-none disabled:opacity-50 disabled:pointer-events-none';
+
         const variants = {
-            primary: 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm border border-white/10',
-            ghost: 'hover:bg-white/10 text-white/80 hover:text-white',
-            outline: 'border border-white/30 hover:bg-white/10 text-white',
+            primary: 'bg-white/15 hover:bg-white/25 text-white/90 hover:text-white backdrop-blur-md border border-white/30 shadow-[0_4px_24px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_32px_rgba(255,255,255,0.15)]',
+            ghost: 'bg-white/5 hover:bg-white/15 text-white/70 hover:text-white backdrop-blur-sm border border-white/10 hover:border-white/20',
+            outline: 'bg-transparent hover:bg-white/10 text-white/80 hover:text-white border border-white/40 hover:border-white/60 backdrop-blur-sm',
         };
 
         const sizes = {

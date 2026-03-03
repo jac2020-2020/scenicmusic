@@ -2,11 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'SanJiSuXian';
+    src: url('/SanJiSuXianJianTi-2.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 @layer base {
     body {
         @apply bg-gray-900 text-white antialiased overflow-hidden;
-        font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'Times New Roman', serif;
+        font-family: 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
     }
+
+    /* 英文使用衬线字体 */
+    :lang(en), [lang="en"] {
+        font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
+    }
+}
+
+.font-hetian,
+.hetian-font {
+    font-family: 'SanJiSuXian', 'Noto Sans SC', sans-serif !important;
 }
 
 @layer utilities {

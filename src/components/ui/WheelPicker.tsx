@@ -22,9 +22,9 @@ export function WheelPicker<T extends string>({
     arcSide,
     className,
 }: WheelPickerProps<T>) {
-    const ITEM_HEIGHT = 64;
-    const VIEWPORT_HEIGHT = 420;
-    const RADIUS = 280;
+    const ITEM_HEIGHT = 56;
+    const VIEWPORT_HEIGHT = 320;
+    const RADIUS = 200;
     const SPACER_HEIGHT = (VIEWPORT_HEIGHT - ITEM_HEIGHT) / 2;
     const CYCLE_COUNT = 9;
     const MID_CYCLE = Math.floor(CYCLE_COUNT / 2);
@@ -174,7 +174,7 @@ export function WheelPicker<T extends string>({
             {title && showTitle && <div className='text-xs font-medium text-white/30 mb-6 tracking-widest'>{title}</div>}
 
             <div
-                className='relative w-64'
+                className='relative w-44 sm:w-52 md:w-64'
                 style={{ height: VIEWPORT_HEIGHT }}
             >
                 <div
@@ -219,24 +219,30 @@ export function WheelPicker<T extends string>({
                                         filter: `blur(${blur}px)`,
                                     }}
                                 >
-                                    <div className='flex items-center gap-3'>
+                                    <div className='flex items-center gap-2 sm:gap-3'>
                                         {option.icon && iconPosition === 'left' && (
-                                            <span className={cn(isActive ? 'scale-125' : 'scale-90')}>
-                                                {option.icon}
+                                            <span className={cn('transition-transform', isActive ? 'scale-110 sm:scale-125' : 'scale-75 sm:scale-90')}>
+                                                <span className='[&>svg]:w-3.5 [&>svg]:h-3.5 sm:[&>svg]:w-4 sm:[&>svg]:h-4 md:[&>svg]:w-[18px] md:[&>svg]:h-[18px]'>
+                                                    {option.icon}
+                                                </span>
                                             </span>
                                         )}
                                         <span
                                             className={cn(
-                                                'font-serif',
-                                                isActive ? 'text-4xl tracking-wide font-semibold' : 'text-xl tracking-normal font-light',
+                                                'font-sans',
+                                                isActive
+                                                    ? 'text-2xl sm:text-3xl md:text-4xl tracking-wide font-normal'
+                                                    : 'text-lg sm:text-xl md:text-2xl tracking-normal font-extralight',
                                             )}
                                             style={{ color: isActive ? 'white' : 'rgba(255,255,255,0.45)' }}
                                         >
                                             {option.label || option.value}
                                         </span>
                                         {option.icon && iconPosition === 'right' && (
-                                            <span className={cn(isActive ? 'scale-125' : 'scale-90')}>
-                                                {option.icon}
+                                            <span className={cn('transition-transform', isActive ? 'scale-110 sm:scale-125' : 'scale-75 sm:scale-90')}>
+                                                <span className='[&>svg]:w-3.5 [&>svg]:h-3.5 sm:[&>svg]:w-4 sm:[&>svg]:h-4 md:[&>svg]:w-[18px] md:[&>svg]:h-[18px]'>
+                                                    {option.icon}
+                                                </span>
                                             </span>
                                         )}
                                     </div>

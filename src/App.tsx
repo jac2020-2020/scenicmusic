@@ -20,20 +20,29 @@ function App() {
             <main className="relative z-10 h-full w-full flex flex-col p-6 md:p-12 justify-between">
                 
                 {/* 顶部：标题 */}
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className="mt-8 md:mt-0 text-center md:text-left"
+                    className="mt-4 md:mt-0 text-center shrink-0 relative flex items-center justify-center"
+                    style={{ height: '80px' }}
                 >
-                    <h1 className="text-3xl md:text-5xl font-light tracking-wider mb-2 font-serif italic">Scenic Music</h1>
-                    <p className="text-white/60 text-xs md:text-sm font-light tracking-wide">
-                        让环境与情绪，谱写你的专属旋律。
+                    {/* scene 文字在底层 - 中间实、两侧模糊 */}
+                    <p
+                        className="absolute text-white/30 text-xl sm:text-2xl md:text-3xl font-serif tracking-[0.4em] select-none pointer-events-none"
+                        style={{
+                            maskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+                        }}
+                    >
+                        SCENE
                     </p>
+                    {/* 境 文字在上层 */}
+                    <h1 className="hetian-font text-4xl sm:text-5xl md:text-7xl tracking-wider relative z-10">境</h1>
                 </motion.div>
 
                 {/* 底部/中部：步骤流内容 */}
-                <div className="flex-1 flex flex-col justify-end md:justify-center mt-12 pb-8 md:pb-0">
+                <div className="flex-1 flex flex-col justify-center pb-8 md:pb-0">
                     <AnimatePresence mode="wait">
                         {currentStep === 1 && (
                             <motion.div key="step1" className="w-full">

@@ -72,7 +72,12 @@ export const UploadStep: React.FC = () => {
                         }}
                         className="w-full flex flex-col items-center"
                     >
-                        <h2 className="text-2xl md:text-3xl font-medium tracking-[0.18em] mb-6">何地？</h2>
+                        {/* 此景文字 - 左右有小横线 */}
+                        <div className="flex items-center gap-5 mb-6 relative">
+                            <div className='w-6 h-px bg-white/40' />
+                            <h2 className="hetian-font text-base sm:text-lg md:text-xl tracking-wider text-white/90">此景</h2>
+                            <div className='w-6 h-px bg-white/40' />
+                        </div>
 
                         <motion.div
                             layout
@@ -110,20 +115,20 @@ export const UploadStep: React.FC = () => {
                                             onClick={prevStep}
                                             whileHover={{ scale: 1.04 }}
                                             whileTap={{ scale: 0.96 }}
-                                            className='w-16 h-16 rounded-full border border-white/70 bg-white/10 backdrop-blur-sm flex items-center justify-center text-white shadow-[0_0_20px_rgba(255,255,255,0.22)]'
+                                            className='w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/15 hover:bg-white/25 text-white/90 backdrop-blur-xl border border-white/40 hover:border-white/60 flex items-center justify-center shadow-[0_4px_24px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_32px_rgba(255,255,255,0.2)] transition-all'
                                             aria-label='返回上一步'
                                         >
-                                            <ArrowLeft size={24} />
+                                            <ArrowLeft size={22} className='sm:w-6 sm:h-6' />
                                         </motion.button>
                                         <motion.button
                                             type='button'
                                             onClick={nextStep}
                                             whileHover={{ scale: 1.04 }}
                                             whileTap={{ scale: 0.96 }}
-                                            className='w-16 h-16 rounded-full border border-white/70 bg-white/10 backdrop-blur-sm flex items-center justify-center text-white shadow-[0_0_20px_rgba(255,255,255,0.22)]'
+                                            className='w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/15 hover:bg-white/25 text-white/90 backdrop-blur-xl border border-white/40 hover:border-white/60 flex items-center justify-center shadow-[0_4px_24px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_32px_rgba(255,255,255,0.2)] transition-all'
                                             aria-label='跳过上传并下一步'
                                         >
-                                            <ArrowRight size={24} />
+                                            <ArrowRight size={22} className='sm:w-6 sm:h-6' />
                                         </motion.button>
                                     </div>
                                 </motion.div>
