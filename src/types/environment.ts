@@ -6,4 +6,6 @@ export interface EnvironmentState {
     weather: Weather;
     time: Time;
     scene: Scene;
+    photoUrl?: string;
+    tags?: string[];
 }

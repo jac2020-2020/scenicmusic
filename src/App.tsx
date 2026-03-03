@@ -2,6 +2,8 @@ import { DynamicBackground } from '@/features/environment/DynamicBackground';
 import { SceneForeground } from '@/features/environment/SceneForeground';
 import { WeatherTimeStep } from '@/features/environment/WeatherTimeStep';
 import { SceneStep } from '@/features/environment/SceneStep';
+import { UploadStep } from '@/features/upload/UploadStep';
+import { PlaybackStep } from '@/features/player/PlaybackStep';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -49,10 +51,20 @@ function App() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
-                                className="w-full flex flex-col items-center justify-center text-center"
+                                className="w-full"
                             >
-                                <h2 className="text-2xl font-light tracking-widest mb-6">照片上传开发中...</h2>
-                                <button onClick={() => useEnvironmentStore.getState().prevStep()} className="text-white/50 hover:text-white underline underline-offset-4">返回上一步</button>
+                                <UploadStep />
+                            </motion.div>
+                        )}
+                        {currentStep === 4 && (
+                            <motion.div 
+                                key="step4" 
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="w-full"
+                            >
+                                <PlaybackStep />
                             </motion.div>
                         )}
                     </AnimatePresence>
