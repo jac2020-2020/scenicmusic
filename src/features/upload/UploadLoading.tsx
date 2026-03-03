@@ -11,11 +11,15 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
     isResolved,
     onReadyToContinue,
 }) => {
-    const { weather, photoUrl } = useEnvironmentStore();
+    const { weather, time, scene, mood, photoUrl } = useEnvironmentStore();
     const [progress, setProgress] = useState(0);
     const [textIndex, setTextIndex] = useState(0);
     const [showPulse, setShowPulse] = useState(false);
+    const [choiceIndex, setChoiceIndex] = useState(0);
     const hasCompletedRef = useRef(false);
+    const mountedAtRef = useRef<number>(Date.now());
+    const minDurationTimerRef = useRef<number | null>(null);
+    const [hasMinDuration, setHasMinDuration] = useState(false);
 
     const textSequence = useMemo(() => {
         switch (weather) {
@@ -33,6 +37,31 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
                 return ['正在感知画面情绪...', '正在提取空间特征...', '正在匹配氛围旋律...'];
         }
     }, [weather]);
+
+    const choiceSequence = useMemo(() => {
+        const base = [
+            `天气 · ${weather}`,
+            `时段 · ${time}`,
+            `场景 · ${scene}`,
+        ];
+        if (mood) {
+            base.push(`心情 · ${mood}`);
+        }
+        return base;
+    }, [mood, scene, time, weather]);
+
+    useEffect(() => {
+        mountedAtRef.current = Date.now();
+        const minDurationMs = 2300;
+        minDurationTimerRef.current = window.setTimeout(() => {
+            setHasMinDuration(true);
+        }, minDurationMs);
+        return () => {
+            if (minDurationTimerRef.current !== null) {
+                window.clearTimeout(minDurationTimerRef.current);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         const interval = window.setInterval(() => {
@@ -63,7 +92,15 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
     }, [textSequence]);
 
     useEffect(() => {
-        if (hasCompletedRef.current || progress < 99.9) return;
+        if (choiceSequence.length <= 1) return;
+        const interval = window.setInterval(() => {
+            setChoiceIndex(prev => (prev + 1) % choiceSequence.length);
+        }, 520);
+        return () => window.clearInterval(interval);
+    }, [choiceSequence]);
+
+    useEffect(() => {
+        if (hasCompletedRef.current || progress < 99.9 || !hasMinDuration) return;
 
         hasCompletedRef.current = true;
         setShowPulse(true);
@@ -149,6 +186,34 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
                         {textSequence[textIndex]}
                     </motion.p>
                 </AnimatePresence>
+
+                {/* 之前选择项：逐个浮现再模糊 */}
+                <div className='relative mt-4 h-8 w-full overflow-hidden'>
+                    <AnimatePresence mode='wait'>
+                        <motion.p
+                            key={`${choiceSequence[choiceIndex]}-${choiceIndex}`}
+                            initial={{
+                                opacity: 0,
+                                y: 10,
+                                filter: 'blur(12px)',
+                            }}
+                            animate={{
+                                opacity: 0.75,
+                                y: 0,
+                                filter: 'blur(0px)',
+                            }}
+                            exit={{
+                                opacity: 0,
+                                y: -8,
+                                filter: 'blur(16px)',
+                            }}
+                            transition={{ duration: 0.48, ease: 'easeInOut' }}
+                            className='absolute inset-0 text-sm tracking-[0.24em] text-white/70'
+                        >
+                            {choiceSequence[choiceIndex]}
+                        </motion.p>
+                    </AnimatePresence>
+                </div>
 
                 {/* 光斑动画 (mix-blend-mode) */}
                 <motion.div

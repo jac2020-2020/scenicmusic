@@ -7,6 +7,7 @@ import { UploadStep } from '@/features/upload/UploadStep';
 import { PlaybackStep } from '@/features/player/PlaybackStep';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { useAmbientLayers } from '@/hooks/useAmbientLayers';
+import { AudioUnlockOverlay } from '@/components/AudioUnlockOverlay';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function App() {
@@ -88,6 +89,8 @@ function App() {
                     </div>
 
                 </main>
+
+            <AudioUnlockOverlay />
         </div>
     );
 }

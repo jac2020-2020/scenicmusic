@@ -22,6 +22,10 @@ interface EnvironmentStore extends EnvironmentState {
     prevStep: () => void;
     setStep: (step: Step) => void;
     resetToHome: () => void;
+
+    // 音频解锁（浏览器需用户点击后才允许播放）
+    audioUnlocked: boolean;
+    setAudioUnlocked: (v: boolean) => void;
 }
 
 export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
@@ -63,5 +67,8 @@ export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
         // 重置时保留用户设置的音量，或根据需求重置
         // 这里选择保留，所以不覆盖 volume 状态
     })),
+
+    audioUnlocked: false,
+    setAudioUnlocked: (v) => set({ audioUnlocked: v }),
 }));
 

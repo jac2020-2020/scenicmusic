@@ -3,7 +3,7 @@ import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { getWeatherAudioPath, getTimeAudioPath, getSceneAudioPath } from '@/utils/ambientMap';
 import type { Weather, Time, Scene } from '@/types/environment';
 
-const LAYER_VOLUME = 0.035; // 每层音效极低音量，三层叠加约 0.1
+const LAYER_VOLUME = 0.12; // 每层音效基础音量，三层叠加约 0.36
 const CROSSFADE_MS = 1800; // 切换淡入淡出时长
 
 // 雪天、正午、清晨三个的音频音量进一步减小
@@ -57,7 +57,7 @@ const crossfade = (
 };
 
 export const useAmbientLayers = () => {
-    const { weather, time, scene, currentStep, volumes } = useEnvironmentStore();
+    const { weather, time, scene, currentStep, volumes, audioUnlocked } = useEnvironmentStore();
 
     // Weather layers
     const weatherRefs = useRef<Record<string, { a: HTMLAudioElement; b: HTMLAudioElement; active: 'A' | 'B' }>>({});
@@ -145,6 +145,8 @@ export const useAmbientLayers = () => {
             return () => next.removeEventListener('canplay', onCanPlay);
         };
 
+        if (!audioUnlocked) return;
+
         const stepAllowsWeatherTime = currentStep >= 1;
         const stepAllowsScene = currentStep >= 2;
 
@@ -182,5 +184,5 @@ export const useAmbientLayers = () => {
         });
 
         return () => cleanups.forEach(fn => fn());
-    }, [weather, time, scene, currentStep, volumes]);
+    }, [weather, time, scene, currentStep, volumes, audioUnlocked]);
 };
