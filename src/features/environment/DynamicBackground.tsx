@@ -3,6 +3,8 @@ import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { WeatherParticles } from './WeatherParticles';
 import { CloudyEffect } from './CloudyEffect';
 import { LensFlareEffect } from './LensFlareEffect';
+import { TimeEffects } from './TimeEffects';
+import { EnvironmentLighting } from './EnvironmentLighting';
 import { cn } from '@/utils/cn';
 
 export const DynamicBackground: React.FC = () => {
@@ -13,8 +15,8 @@ export const DynamicBackground: React.FC = () => {
         '清晨': 'from-[#B5C1C5] to-[#E3D9C9]', // 雾霾蓝 到 晨曦燕麦色
         '正午': 'from-[#90A8C3] to-[#DAE5EC]', // 柔和晴空蓝 到 地平线白
         '傍晚': 'from-[#A28B99] to-[#DFB9A9]', // 烟粉色 到 淡橘桃色
-        '夜晚': 'from-[#222A35] to-[#11151A]', // 沉静深岩灰蓝 到 极夜黑
-        '凌晨': 'from-[#13151A] to-[#08090A]', // 破晓前的幽深黑灰
+        '夜晚': 'from-[#2C3643] to-[#161B22]', // 调亮后的深岩灰蓝 到 深灰黑
+        '凌晨': 'from-[#1E252D] to-[#0D1115]', // 调亮后的幽深黑灰 到 极暗灰
     };
 
     return (
@@ -34,17 +36,19 @@ export const DynamicBackground: React.FC = () => {
                 />
             ))}
 
-            {/* 阴天覆盖层 */}
-            {weather === '阴天' && (
-                <div className="absolute inset-0 bg-gray-500/40 mix-blend-multiply transition-opacity duration-1000" />
-            )}
+            {/* 环境光滤镜层 */}
+            <EnvironmentLighting />
 
-            {/* 天气特效层 - 晴天镜头光晕 */}
-            {weather === '晴天' && <LensFlareEffect time={time} />}
+            {/* 时段天体特效层 */}
+            <TimeEffects />
 
-            {weather === '多云' && <CloudyEffect />}
+            {/* 天气特效层 - 仅晴天正午显示镜头光晕 */}
+            {weather === '晴天' && time === '正午' && <LensFlareEffect time={time} />}
 
-            <WeatherParticles weather={weather} />
+            {/* 仅在多云时显示云层 */}
+            {weather === '多云' && <CloudyEffect time={time} />}
+
+            <WeatherParticles weather={weather} time={time} />
         </div>
     );
 };

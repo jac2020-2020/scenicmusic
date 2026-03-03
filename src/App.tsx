@@ -43,49 +43,49 @@ function App() {
                 </motion.div>
 
                 {/* 底部/中部：步骤流内容 */}
-                <div className="flex-1 flex flex-col justify-center pb-8 md:pb-0">
+                <div className="flex-1 flex flex-col justify-center mt-12 sm:mt-16 md:mt-24 pb-8 md:pb-0">
                     <AnimatePresence mode="wait">
-                        {currentStep === 1 && (
-                            <motion.div key="step1" className="w-full">
-                                <WeatherTimeStep />
-                            </motion.div>
-                        )}
-                        {currentStep === 2 && (
-                            <motion.div key="step2" className="w-full">
-                                <SceneStep />
-                            </motion.div>
-                        )}
-                        {currentStep === 3 && (
-                            <motion.div key="step3" className="w-full">
-                                <MoodStep />
-                            </motion.div>
-                        )}
-                        {currentStep === 4 && (
-                            <motion.div
-                                key="step4"
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="w-full"
-                            >
-                                <UploadStep />
-                            </motion.div>
-                        )}
-                        {currentStep === 5 && (
-                            <motion.div
-                                key="step5"
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="w-full"
-                            >
-                                <PlaybackStep />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
+                            {currentStep === 1 && (
+                                <motion.div key="step1" className="w-full">
+                                    <WeatherTimeStep />
+                                </motion.div>
+                            )}
+                            {currentStep === 2 && (
+                                <motion.div key="step2" className="w-full">
+                                    <SceneStep />
+                                </motion.div>
+                            )}
+                            {currentStep === 3 && (
+                                <motion.div key="step3" className="w-full">
+                                    <MoodStep />
+                                </motion.div>
+                            )}
+                            {currentStep === 4 && (
+                                <motion.div
+                                    key="step4"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="w-full"
+                                >
+                                    <UploadStep />
+                                </motion.div>
+                            )}
+                            {currentStep === 5 && (
+                                <motion.div
+                                    key="step5"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="w-full"
+                                >
+                                    <PlaybackStep />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
 
-            </main>
+                </main>
         </div>
     );
 }

@@ -10,6 +10,15 @@
     font-display: swap;
 }
 
+/* SweiDartSansCJKjp - 用于境、此时、此地、此情、此景等意境文字 */
+@font-face {
+    font-family: 'SweiDartSansCJKjp';
+    src: url('/SweiDartSansCJKjp-Light-2.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
 @layer base {
     body {
         @apply bg-gray-900 text-white antialiased overflow-hidden;
@@ -22,9 +31,10 @@
     }
 }
 
+/* 境、此时、此地、此情、此景 等意境文字使用 SweiDartSansCJKjp */
 .font-hetian,
 .hetian-font {
-    font-family: 'SanJiSuXian', 'Noto Sans SC', sans-serif !important;
+    font-family: 'SweiDartSansCJKjp', 'Noto Sans SC', sans-serif !important;
 }
 
 @layer utilities {

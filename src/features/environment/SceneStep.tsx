@@ -40,10 +40,10 @@ export const SceneStep: React.FC = () => {
                     className='w-full scale-[0.8] sm:scale-90 md:scale-100 -ml-8 sm:-ml-16 md:-ml-24'
                 />
 
-                {/* 此地文字 - 纵排，上下有小竖线 */}
+                {/* 此刻文字 - 纵排，上下有小竖线 */}
                 <div className='ml-2 sm:ml-4 md:ml-8 pointer-events-none flex flex-col items-center'>
                     <div className='w-px h-4 bg-white/40 mb-3' />
-                    <span className='hetian-font text-base sm:text-lg md:text-xl text-white/80 [writing-mode:vertical-rl] tracking-widest'>此地</span>
+                    <span className='hetian-font text-base sm:text-lg md:text-xl text-white/80 [writing-mode:vertical-rl] tracking-widest'>此刻</span>
                     <div className='w-px h-4 bg-white/40 mt-3' />
                 </div>
             </div>

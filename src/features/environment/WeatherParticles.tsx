@@ -35,9 +35,10 @@ interface ButtonObstacle {
 
 interface WeatherParticlesProps {
     weather: Weather;
+    time: string;
 }
 
-export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather }) => {
+export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, time }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationFrameRef = useRef<number>(0);
     const rainDropsRef = useRef<RainDrop[]>([]);
@@ -171,6 +172,18 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather }) =
             // 模拟风的变化
             windRef.current = Math.sin(timeRef.current * 0.0001) * 0.5;
 
+            // 获取受当前时段影响的环境光颜色
+            const getParticleColor = (alpha: number) => {
+                if (time === '夜晚' || time === '凌晨') {
+                    return `rgba(200, 210, 230, ${alpha})`; // 冷蓝
+                } else if (time === '傍晚') {
+                    // 傍晚的背景是烟粉到淡橘色，所以粒子需要更白、更亮一些，带极其微弱的暖光，否则会隐形
+                    return `rgba(255, 240, 230, ${Math.min(1, alpha * 1.5)})`; 
+                } else {
+                    return `rgba(255, 255, 255, ${alpha})`; // 自然白
+                }
+            };
+
             if (weather === '大雨' || weather === '小雨') {
                 rainDropsRef.current.forEach(drop => {
                     const windOffset = windRef.current * (1 + drop.z);
@@ -208,16 +221,16 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather }) =
                                 0,
                                 Math.PI * 2
                             );
-                            ctx.fillStyle = `rgba(255, 255, 255, ${drop.opacity * 0.6})`;
+                            ctx.fillStyle = getParticleColor(drop.opacity * 0.6);
                             ctx.fill();
                         }
                     }
 
                     // 绘制雨滴
                     const gradient = ctx.createLinearGradient(drop.x, drop.y, endX, endY);
-                    gradient.addColorStop(0, `rgba(255, 255, 255, 0)`);
-                    gradient.addColorStop(0.3, `rgba(255, 255, 255, ${drop.opacity})`);
-                    gradient.addColorStop(1, `rgba(255, 255, 255, ${drop.opacity * 0.3})`);
+                    gradient.addColorStop(0, getParticleColor(0));
+                    gradient.addColorStop(0.3, getParticleColor(drop.opacity));
+                    gradient.addColorStop(1, getParticleColor(drop.opacity * 0.3));
 
                     ctx.beginPath();
                     ctx.moveTo(drop.x, drop.y);
@@ -231,7 +244,7 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather }) =
                     if (drop.z > 0.7 && Math.random() > 0.98) {
                         ctx.beginPath();
                         ctx.arc(drop.x, drop.y, drop.width * 0.8, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(255, 255, 255, ${drop.opacity * 0.5})`;
+                        ctx.fillStyle = getParticleColor(drop.opacity * 0.5);
                         ctx.fill();
                     }
 
@@ -310,12 +323,12 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather }) =
                             else ctx.lineTo(x, y);
                         }
                         ctx.closePath();
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${flake.opacity})`;
+                        ctx.strokeStyle = getParticleColor(flake.opacity);
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
                     } else {
                         ctx.arc(0, 0, flake.size * 0.6, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(255, 255, 255, ${flake.opacity})`;
+                        ctx.fillStyle = getParticleColor(flake.opacity);
                         ctx.fill();
                     }
 
@@ -356,7 +369,7 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather }) =
             window.removeEventListener('resize', handleResize);
             cancelAnimationFrame(animationFrameRef.current);
         };
-    }, [weather, updateButtonPositions]);
+    }, [weather, time, updateButtonPositions]);
 
     if (!['大雨', '小雨', '雪天'].includes(weather)) return null;
 
