@@ -1,4 +1,4 @@
-import type { Scene, Time, Weather } from '@/types/environment';
+import type { Scene, Time, Weather, Mood } from '@/types/environment';
 
 export interface MusicTrack {
     id: string;
@@ -9,6 +9,7 @@ export interface MusicTrack {
     weathers: Weather[];
     times: Time[];
     scenes: Scene[];
+    moods: Mood[];
     tags: string[];
 }
 
@@ -16,6 +17,7 @@ interface MatchMusicOptions {
     weather: Weather;
     time: Time;
     scene: Scene;
+    mood?: Mood;
     tags?: string[];
     excludeTrackIds?: string[];
 }
@@ -30,6 +32,7 @@ const MUSIC_LIBRARY: MusicTrack[] = [
         weathers: ['大雨', '小雨', '阴天'],
         times: ['夜晚', '凌晨'],
         scenes: ['沉浸阅读', '文学聚会'],
+        moods: ['平静', '忧伤', '怀旧'],
         tags: ['书本', '书桌', '雨滴', '咖啡杯'],
     },
     {
@@ -41,6 +44,7 @@ const MUSIC_LIBRARY: MusicTrack[] = [
         weathers: ['晴天', '多云'],
         times: ['正午', '傍晚'],
         scenes: ['美食盛宴'],
+        moods: ['愉悦', '兴奋', '期待'],
         tags: ['餐桌', '甜点', '果盘', '阳光'],
     },
     {
@@ -52,6 +56,7 @@ const MUSIC_LIBRARY: MusicTrack[] = [
         weathers: ['多云', '阴天', '小雨'],
         times: ['傍晚', '夜晚'],
         scenes: ['品酒时光', '文学聚会'],
+        moods: ['平静', '疲惫', '怀旧'],
         tags: ['酒杯', '烛光', '木桌'],
     },
     {
@@ -63,6 +68,7 @@ const MUSIC_LIBRARY: MusicTrack[] = [
         weathers: ['雪天', '阴天'],
         times: ['清晨', '凌晨'],
         scenes: ['沉浸阅读'],
+        moods: ['平静', '忧伤', '焦虑'],
         tags: ['窗边', '毛毯', '书本'],
     },
     {
@@ -74,6 +80,7 @@ const MUSIC_LIBRARY: MusicTrack[] = [
         weathers: ['晴天', '多云'],
         times: ['清晨', '正午'],
         scenes: ['文学聚会', '沉浸阅读'],
+        moods: ['愉悦', '平静', '期待'],
         tags: ['书本', '纸张', '阳光', '植物'],
     },
     {
@@ -85,6 +92,7 @@ const MUSIC_LIBRARY: MusicTrack[] = [
         weathers: ['小雨', '大雨', '多云'],
         times: ['夜晚', '正午', '傍晚'],
         scenes: ['美食盛宴', '品酒时光'],
+        moods: ['愉悦', '疲惫', '焦虑'],
         tags: ['餐桌', '热汤', '咖啡杯', '酒杯'],
     },
 ];
@@ -97,6 +105,7 @@ export const matchMusicTrack = ({
     weather,
     time,
     scene,
+    mood,
     tags = [],
     excludeTrackIds = [],
 }: MatchMusicOptions): MusicTrack => {
@@ -109,13 +118,14 @@ export const matchMusicTrack = ({
         const weatherScore = track.weathers.includes(weather) ? 4 : 0;
         const timeScore = track.times.includes(time) ? 3 : 0;
         const sceneScore = track.scenes.includes(scene) ? 5 : 0;
+        const moodScore = mood && track.moods.includes(mood) ? 3 : 0;
         const tagScore = normalizedTags.reduce((sum, tag) => {
             return track.tags.map(normalize).includes(tag) ? sum + 2 : sum;
         }, 0);
 
         return {
             track,
-            score: weatherScore + timeScore + sceneScore + tagScore,
+            score: weatherScore + timeScore + sceneScore + moodScore + tagScore,
         };
     });
 

@@ -79,7 +79,14 @@ export const WeatherTimeStep: React.FC = () => {
                 onClick={nextStep}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
-                className='w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/15 hover:bg-white/25 text-white/90 backdrop-blur-xl border border-white/40 hover:border-white/60 flex items-center justify-center shadow-[0_4px_24px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_32px_rgba(255,255,255,0.2)] transition-all'
+                className='w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-all'
+                style={{
+                    background: 'linear-gradient(145deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.04) 100%)',
+                    backdropFilter: 'blur(16px) saturate(150%)',
+                    WebkitBackdropFilter: 'blur(16px) saturate(150%)',
+                    border: '0.5px solid rgba(255,255,255,0.2)',
+                    boxShadow: 'inset 0 0.5px 0.5px rgba(255,255,255,0.35), 0 2px 8px rgba(0,0,0,0.08)',
+                }}
                 aria-label='下一步'
             >
                 <ArrowRight size={22} className='sm:w-6 sm:h-6' />

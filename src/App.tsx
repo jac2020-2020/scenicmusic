@@ -2,6 +2,7 @@ import { DynamicBackground } from '@/features/environment/DynamicBackground';
 import { SceneForeground } from '@/features/environment/SceneForeground';
 import { WeatherTimeStep } from '@/features/environment/WeatherTimeStep';
 import { SceneStep } from '@/features/environment/SceneStep';
+import { MoodStep } from '@/features/mood/MoodStep';
 import { UploadStep } from '@/features/upload/UploadStep';
 import { PlaybackStep } from '@/features/player/PlaybackStep';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
@@ -14,11 +15,11 @@ function App() {
         <div className="relative min-h-screen w-full text-white overflow-hidden selection:bg-white/30">
             {/* 视觉层 */}
             <DynamicBackground />
-            {currentStep >= 2 && <SceneForeground />}
+            {currentStep >= 4 && <SceneForeground />}
 
             {/* 交互层 */}
             <main className="relative z-10 h-full w-full flex flex-col p-6 md:p-12 justify-between">
-                
+
                 {/* 顶部：标题 */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -55,8 +56,13 @@ function App() {
                             </motion.div>
                         )}
                         {currentStep === 3 && (
-                            <motion.div 
-                                key="step3" 
+                            <motion.div key="step3" className="w-full">
+                                <MoodStep />
+                            </motion.div>
+                        )}
+                        {currentStep === 4 && (
+                            <motion.div
+                                key="step4"
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
@@ -65,9 +71,9 @@ function App() {
                                 <UploadStep />
                             </motion.div>
                         )}
-                        {currentStep === 4 && (
-                            <motion.div 
-                                key="step4" 
+                        {currentStep === 5 && (
+                            <motion.div
+                                key="step5"
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
@@ -78,7 +84,7 @@ function App() {
                         )}
                     </AnimatePresence>
                 </div>
-                
+
             </main>
         </div>
     );

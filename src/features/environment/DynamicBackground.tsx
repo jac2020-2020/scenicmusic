@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { WeatherParticles } from './WeatherParticles';
+import { CloudyEffect } from './CloudyEffect';
 import { cn } from '@/utils/cn';
 import { motion } from 'framer-motion';
 
@@ -39,18 +40,7 @@ export const DynamicBackground: React.FC = () => {
                 />
             )}
 
-            {weather === '多云' && (
-                <motion.div
-                    className="absolute top-10 left-0 w-full h-40 opacity-60 flex gap-20 blur-md"
-                    animate={{ x: [0, -1000] }}
-                    transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                >
-                    {/* 简单的云朵模拟 */}
-                    {[...Array(5)].map((_, i) => (
-                        <div key={i} className="w-64 h-20 bg-white/40 rounded-full shrink-0" />
-                    ))}
-                </motion.div>
-            )}
+            {weather === '多云' && <CloudyEffect />}
 
             <WeatherParticles weather={weather} />
         </div>
