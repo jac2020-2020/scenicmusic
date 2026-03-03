@@ -29,9 +29,9 @@ const TIME_OPTIONS: { value: Time; icon: React.ReactNode }[] = [
 
 const SCENE_OPTIONS: { value: Scene; icon: React.ReactNode }[] = [
     { value: '沉浸阅读', icon: <BookOpen size={20} /> },
-    { value: '文学聚会', icon: <Users size={20} /> },
+    { value: '读书聚会', icon: <Users size={20} /> },
     { value: '品酒时光', icon: <Wine size={20} /> },
-    { value: '美食盛宴', icon: <Utensils size={20} /> },
+    { value: '美食享受', icon: <Utensils size={20} /> },
 ];
 
 interface OptionGroupProps<T> {

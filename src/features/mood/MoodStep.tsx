@@ -142,57 +142,51 @@ export const MoodStep: React.FC = () => {
                                 height: isSelected ? `${config.size * 1.15}px` : `${config.size}px`,
                                 left: `calc(${config.x}% - ${isSelected ? config.size * 1.15 / 2 : config.size / 2}px)`,
                                 top: `calc(${config.y}% - ${isSelected ? config.size * 1.15 / 2 : config.size / 2}px)`,
-                                // 选中时更亮更实的质感
+                                // 模拟真实的玻璃/水滴折射材质：中间极度透明，边缘因折射率变厚而泛白
                                 background: isSelected
-                                    ? 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.5) 25%, rgba(255,255,255,0.25) 55%, rgba(255,255,255,0.12) 100%)'
-                                    : 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.2) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 100%)',
-                                // 选中时增加发光
+                                    ? 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 30%, rgba(255,255,255,0.05) 70%, rgba(255,255,255,0.3) 100%)'
+                                    : 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.02) 75%, rgba(255,255,255,0.15) 100%)',
+                                backdropFilter: 'blur(6px)',
+                                WebkitBackdropFilter: 'blur(6px)',
+                                // 用内外阴影替代生硬的边框，刻画体积感
                                 boxShadow: isSelected
-                                    ? 'inset -3px -3px 8px rgba(255,255,255,0.6), inset 3px 3px 8px rgba(255,255,255,0.4), 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(255,255,255,0.15)'
-                                    : 'inset -2px -2px 4px rgba(255,255,255,0.3), inset 2px 2px 4px rgba(255,255,255,0.15)',
-                                // 选中时边框更亮
-                                border: isSelected
-                                    ? '1.5px solid rgba(255,255,255,0.8)'
-                                    : '1px solid rgba(255,255,255,0.25)',
+                                    ? 'inset 0 0 15px rgba(255,255,255,0.4), inset 0 0 4px rgba(255,255,255,0.6), 0 10px 25px rgba(0,0,0,0.15)'
+                                    : 'inset 0 0 10px rgba(255,255,255,0.2), inset 0 0 2px rgba(255,255,255,0.4), 0 6px 15px rgba(0,0,0,0.08)',
+                                border: 'none',
                             }}
                         >
-                            {/* 高光反光点 */}
+                            {/* 真实曲面高光 (模拟单侧主光源，如窗户或太阳在球面的反射) */}
                             <div
-                                className="absolute rounded-full"
+                                className="absolute pointer-events-none transition-all duration-500"
                                 style={{
-                                    width: isSelected ? `${config.size * 0.22}px` : `${config.size * 0.2}px`,
-                                    height: isSelected ? `${config.size * 0.17}px` : `${config.size * 0.15}px`,
-                                    top: `${config.size * 0.16}px`,
-                                    left: `${config.size * 0.2}px`,
-                                    filter: 'blur(1px)',
-                                    transform: 'rotate(-45deg)',
-                                    background: isSelected ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.6)',
+                                    top: '8%',
+                                    left: '12%',
+                                    width: '45%',
+                                    height: '25%',
+                                    borderRadius: '50%',
+                                    background: isSelected 
+                                        ? 'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.2) 60%, rgba(255,255,255,0) 100%)'
+                                        : 'linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.05) 60%, rgba(255,255,255,0) 100%)',
+                                    transform: 'rotate(-25deg)',
+                                    filter: 'blur(0.5px)'
                                 }}
                             />
-                            {/* 小反光点 */}
+                            
+                            {/* 底部环境漫反射 (Bounce light，增加晶莹剔透的水滴感) */}
                             <div
-                                className="absolute rounded-full"
+                                className="absolute rounded-full pointer-events-none transition-all duration-500"
                                 style={{
-                                    width: isSelected ? `${config.size * 0.1}px` : `${config.size * 0.08}px`,
-                                    height: isSelected ? `${config.size * 0.1}px` : `${config.size * 0.08}px`,
-                                    top: `${config.size * 0.32}px`,
-                                    left: `${config.size * 0.13}px`,
-                                    background: isSelected ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.4)',
+                                    bottom: '3%',
+                                    right: '8%',
+                                    width: '60%',
+                                    height: '35%',
+                                    background: isSelected 
+                                        ? 'radial-gradient(ellipse at center, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%)'
+                                        : 'radial-gradient(ellipse at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%)',
+                                    transform: 'rotate(-25deg)',
+                                    filter: 'blur(2px)'
                                 }}
                             />
-                            {/* 选中时额外的小闪光点 */}
-                            {isSelected && (
-                                <div
-                                    className="absolute rounded-full bg-white"
-                                    style={{
-                                        width: `${config.size * 0.06}px`,
-                                        height: `${config.size * 0.06}px`,
-                                        top: `${config.size * 0.25}px`,
-                                        right: `${config.size * 0.25}px`,
-                                        filter: 'blur(0.5px)',
-                                    }}
-                                />
-                            )}
                             <span
                                 className={`
                                     relative z-10 text-xs sm:text-sm tracking-wide transition-all duration-300

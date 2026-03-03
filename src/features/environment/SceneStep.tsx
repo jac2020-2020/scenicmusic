@@ -7,9 +7,9 @@ import { motion } from 'framer-motion';
 
 const SCENE_OPTIONS: { value: Scene; icon: React.ReactNode }[] = [
     { value: '沉浸阅读', icon: <BookOpen size={18} /> },
-    { value: '文学聚会', icon: <Users size={18} /> },
+    { value: '读书聚会', icon: <Users size={18} /> },
     { value: '品酒时光', icon: <Wine size={18} /> },
-    { value: '美食盛宴', icon: <Utensils size={18} /> },
+    { value: '美食享受', icon: <Utensils size={18} /> },
 ];
 
 export const SceneStep: React.FC = () => {

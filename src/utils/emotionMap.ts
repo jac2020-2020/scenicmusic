@@ -26,9 +26,9 @@ const TIME_EMOTION: Record<Time, string[]> = {
 
 const SCENE_EMOTION: Record<Scene, string[]> = {
     沉浸阅读: ['专注', '宁静'],
-    文学聚会: ['灵感', '共鸣'],
+    读书聚会: ['灵感', '共鸣'],
     品酒时光: ['醇厚', '微醺'],
-    美食盛宴: ['丰盈', '欢聚'],
+    美食享受: ['丰盈', '欢聚'],
 };
 
 const TAG_HINTS: Record<string, string> = {
