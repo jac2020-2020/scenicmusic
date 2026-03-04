@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, CloudRain, Clock, BookOpen, Music, Sun, Cloud, CloudFog, CloudDrizzle, Snowflake, Sunrise, SunMedium, Sunset, Moon, MoonStar, Users, Wine, Utensils } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { motion } from 'framer-motion';
+import { X, CloudRain, BookOpen, Music, Sun, Cloud, CloudFog, CloudDrizzle, Snowflake, Sunrise, SunMedium, Sunset, Moon, MoonStar, Users, Wine, Utensils } from 'lucide-react';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import type { Weather, Time, Scene } from '@/types/environment';
 
@@ -41,7 +42,7 @@ export const VolumePanel: React.FC<VolumePanelProps> = ({ isOpen, onClose }) => 
     } = useEnvironmentStore();
 
     const panelRef = useRef<HTMLDivElement>(null);
-
+    const canUsePortal = typeof document !== 'undefined' && !!document.body;
     // 点击外部关闭
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -60,53 +61,49 @@ export const VolumePanel: React.FC<VolumePanelProps> = ({ isOpen, onClose }) => 
         return isCurrent ? 1 : 0;
     };
 
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    {/* 背景遮罩 */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
-                    />
+    const panelContent = (
+        <>
+            {/* 背景遮罩 */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[9998] bg-black/20 backdrop-blur-sm"
+            />
 
-                    {/* 面板 */}
-                    <motion.div
-                        ref={panelRef}
-                        initial={{ opacity: 0, y: 100, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 100, scale: 0.95 }}
-                        transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed bottom-0 md:bottom-auto md:top-1/2 left-1/2 -translate-x-1/2 md:-translate-y-1/2 z-50 w-full md:w-[480px] h-[85vh] md:h-[600px] flex flex-col rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden"
-                        style={{
-                            background: 'linear-gradient(145deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 100%)',
-                            backdropFilter: 'blur(20px) saturate(150%)',
-                            WebkitBackdropFilter: 'blur(20px) saturate(150%)',
-                            border: '1px solid rgba(255,255,255,0.5)',
-                            boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.8)',
-                        }}
-                    >
-                        <div className="flex-shrink-0 flex items-center justify-between p-6 pb-4 border-b border-white/30">
-                            <h3 className="text-xl font-medium text-gray-800 tracking-wider">声音调节</h3>
-                            <button 
-                                onClick={onClose}
-                                className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100/50 hover:bg-gray-200/80 text-gray-600 transition-colors"
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
+            {/* 面板 */}
+            <div className='fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4'>
+                <motion.div
+                    ref={panelRef}
+                    initial={{ opacity: 0, y: 24, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 24, scale: 0.95 }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                    className='volume-panel-zh relative flex w-[min(96vw,740px)] flex-col rounded-3xl shadow-2xl overflow-hidden max-h-[calc(100dvh-16px)]'
+                    style={{
+                        background: 'linear-gradient(145deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 100%)',
+                        backdropFilter: 'blur(20px) saturate(150%)',
+                        WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                        border: '1px solid rgba(255,255,255,0.5)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.8)',
+                        fontFamily: '\'Source Han Sans SC\', \'Source Han Sans CN\', sans-serif',
+                    }}
+                >
+                        <button
+                            onClick={onClose}
+                            className='absolute right-3 top-3 sm:right-4 sm:top-4 z-10 w-8 h-8 rounded-full flex items-center justify-center bg-gray-100/50 hover:bg-gray-200/80 text-gray-600 transition-colors'
+                        >
+                            <X size={18} />
+                        </button>
 
-                        <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
-                            
+                        <div className="p-3 pt-12 sm:p-4 sm:pt-14 space-y-3.5 sm:space-y-4 overflow-hidden">
                             {/* 专属音乐 */}
-                            <div className="space-y-4">
-                                <h4 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-2">Music</h4>
-                                <div className="flex flex-col gap-3">
+                            <div className="space-y-2">
+                                <h4 className="volume-en-title text-[11px] font-semibold text-gray-400 tracking-widest uppercase mb-1">Music</h4>
+                                <div className="flex flex-col gap-2">
                                     <div className="flex items-center justify-between text-gray-700">
                                         <div className="flex items-center gap-2">
-                                            <span className="p-1.5 bg-white/50 rounded-md shadow-sm border border-white/60 text-indigo-500">
+                                            <span className="p-1.5 bg-white/50 rounded-md shadow-sm border border-white/60 text-gray-600">
                                                 <Music size={18} />
                                             </span>
                                             <span className="text-sm font-medium">专属音乐</span>
@@ -122,9 +119,9 @@ export const VolumePanel: React.FC<VolumePanelProps> = ({ isOpen, onClose }) => 
                                         step="0.01"
                                         value={musicVolume}
                                         onChange={(e) => setMusicVolume(parseFloat(e.target.value))}
-                                        className="w-full h-1.5 bg-gray-200/80 rounded-full appearance-none cursor-pointer accent-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400/30"
+                                        className="volume-slider w-full h-1.5 bg-gray-200/80 rounded-full appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400/30"
                                         style={{
-                                            backgroundImage: `linear-gradient(to right, rgba(99,102,241,0.8) ${musicVolume * 100}%, transparent ${musicVolume * 100}%)`,
+                                            backgroundImage: `linear-gradient(to right, rgba(148,163,184,0.85) ${musicVolume * 100}%, transparent ${musicVolume * 100}%)`,
                                             backgroundRepeat: 'no-repeat',
                                         }}
                                     />
@@ -132,30 +129,30 @@ export const VolumePanel: React.FC<VolumePanelProps> = ({ isOpen, onClose }) => 
                             </div>
 
                             {/* 天气音效 */}
-                            <div className="space-y-4">
-                                <h4 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-2">Weather</h4>
-                                <div className="grid grid-cols-1 gap-5">
+                            <div className="space-y-2">
+                                <h4 className="volume-en-title text-[11px] font-semibold text-gray-400 tracking-widest uppercase mb-1">Weather</h4>
+                                <div className="grid grid-cols-3 gap-2">
                                     {ALL_WEATHERS.map(item => {
                                         const id = `weather_${item.value}`;
                                         const vol = getVolume(id, weather === item.value);
                                         return (
-                                            <div key={id} className="flex flex-col gap-2">
-                                                <div className="flex items-center justify-between text-gray-700">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="p-1.5 bg-white/30 rounded-md border border-white/40 text-gray-600">
+                                            <div key={id} className="rounded-xl bg-white/20 border border-white/35 px-1.5 py-1.5">
+                                                <div className="flex items-center justify-between text-gray-700 mb-1">
+                                                    <div className="flex items-center gap-1.5 min-w-0">
+                                                        <span className="p-1 bg-white/30 rounded-md border border-white/40 text-gray-600 shrink-0">
                                                             {item.icon}
                                                         </span>
-                                                        <span className="text-sm">{item.label}</span>
+                                                        <span className="text-[11px] truncate">{item.label}</span>
                                                     </div>
-                                                    <span className="text-xs text-gray-400 font-mono">
+                                                    <span className="hidden sm:inline text-[10px] text-gray-400 font-mono shrink-0">
                                                         {Math.round(vol * 100)}%
                                                     </span>
                                                 </div>
                                                 <input
                                                     type="range" min="0" max="1" step="0.01" value={vol}
                                                     onChange={(e) => setVolume(id, parseFloat(e.target.value))}
-                                                    className="w-full h-1 bg-gray-200/50 rounded-full appearance-none cursor-pointer accent-gray-500 focus:outline-none"
-                                                    style={{ backgroundImage: `linear-gradient(to right, rgba(107,114,128,0.6) ${vol * 100}%, transparent ${vol * 100}%)`, backgroundRepeat: 'no-repeat' }}
+                                                    className="volume-slider w-full h-1 bg-gray-200/50 rounded-full appearance-none cursor-pointer focus:outline-none"
+                                                    style={{ backgroundImage: `linear-gradient(to right, rgba(148,163,184,0.85) ${vol * 100}%, transparent ${vol * 100}%)`, backgroundRepeat: 'no-repeat' }}
                                                 />
                                             </div>
                                         );
@@ -164,30 +161,30 @@ export const VolumePanel: React.FC<VolumePanelProps> = ({ isOpen, onClose }) => 
                             </div>
 
                             {/* 时段音效 */}
-                            <div className="space-y-4">
-                                <h4 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-2">Time</h4>
-                                <div className="grid grid-cols-1 gap-5">
+                            <div className="space-y-2">
+                                <h4 className="volume-en-title text-[11px] font-semibold text-gray-400 tracking-widest uppercase mb-1">Time</h4>
+                                <div className="grid grid-cols-3 gap-2">
                                     {ALL_TIMES.map(item => {
                                         const id = `time_${item.value}`;
                                         const vol = getVolume(id, time === item.value);
                                         return (
-                                            <div key={id} className="flex flex-col gap-2">
-                                                <div className="flex items-center justify-between text-gray-700">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="p-1.5 bg-white/30 rounded-md border border-white/40 text-gray-600">
+                                            <div key={id} className="rounded-xl bg-white/20 border border-white/35 px-1.5 py-1.5">
+                                                <div className="flex items-center justify-between text-gray-700 mb-1">
+                                                    <div className="flex items-center gap-1.5 min-w-0">
+                                                        <span className="p-1 bg-white/30 rounded-md border border-white/40 text-gray-600 shrink-0">
                                                             {item.icon}
                                                         </span>
-                                                        <span className="text-sm">{item.label}</span>
+                                                        <span className="text-[11px] truncate">{item.label}</span>
                                                     </div>
-                                                    <span className="text-xs text-gray-400 font-mono">
+                                                    <span className="hidden sm:inline text-[10px] text-gray-400 font-mono shrink-0">
                                                         {Math.round(vol * 100)}%
                                                     </span>
                                                 </div>
                                                 <input
                                                     type="range" min="0" max="1" step="0.01" value={vol}
                                                     onChange={(e) => setVolume(id, parseFloat(e.target.value))}
-                                                    className="w-full h-1 bg-gray-200/50 rounded-full appearance-none cursor-pointer accent-gray-500 focus:outline-none"
-                                                    style={{ backgroundImage: `linear-gradient(to right, rgba(107,114,128,0.6) ${vol * 100}%, transparent ${vol * 100}%)`, backgroundRepeat: 'no-repeat' }}
+                                                    className="volume-slider w-full h-1 bg-gray-200/50 rounded-full appearance-none cursor-pointer focus:outline-none"
+                                                    style={{ backgroundImage: `linear-gradient(to right, rgba(148,163,184,0.85) ${vol * 100}%, transparent ${vol * 100}%)`, backgroundRepeat: 'no-repeat' }}
                                                 />
                                             </div>
                                         );
@@ -196,41 +193,45 @@ export const VolumePanel: React.FC<VolumePanelProps> = ({ isOpen, onClose }) => 
                             </div>
 
                             {/* 场景音效 */}
-                            <div className="space-y-4">
-                                <h4 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-2">Scene</h4>
-                                <div className="grid grid-cols-1 gap-5">
+                            <div className="space-y-2">
+                                <h4 className="volume-en-title text-[11px] font-semibold text-gray-400 tracking-widest uppercase mb-1">Scene</h4>
+                                <div className="grid grid-cols-3 gap-2">
                                     {ALL_SCENES.map(item => {
                                         const id = `scene_${item.value}`;
                                         const vol = getVolume(id, scene === item.value);
                                         return (
-                                            <div key={id} className="flex flex-col gap-2">
-                                                <div className="flex items-center justify-between text-gray-700">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="p-1.5 bg-white/30 rounded-md border border-white/40 text-gray-600">
+                                            <div key={id} className="rounded-xl bg-white/20 border border-white/35 px-1.5 py-1.5">
+                                                <div className="flex items-center justify-between text-gray-700 mb-1">
+                                                    <div className="flex items-center gap-1.5 min-w-0">
+                                                        <span className="p-1 bg-white/30 rounded-md border border-white/40 text-gray-600 shrink-0">
                                                             {item.icon}
                                                         </span>
-                                                        <span className="text-sm">{item.label}</span>
+                                                        <span className="text-[11px] truncate">{item.label}</span>
                                                     </div>
-                                                    <span className="text-xs text-gray-400 font-mono">
+                                                    <span className="hidden sm:inline text-[10px] text-gray-400 font-mono shrink-0">
                                                         {Math.round(vol * 100)}%
                                                     </span>
                                                 </div>
                                                 <input
                                                     type="range" min="0" max="1" step="0.01" value={vol}
                                                     onChange={(e) => setVolume(id, parseFloat(e.target.value))}
-                                                    className="w-full h-1 bg-gray-200/50 rounded-full appearance-none cursor-pointer accent-gray-500 focus:outline-none"
-                                                    style={{ backgroundImage: `linear-gradient(to right, rgba(107,114,128,0.6) ${vol * 100}%, transparent ${vol * 100}%)`, backgroundRepeat: 'no-repeat' }}
+                                                    className="volume-slider w-full h-1 bg-gray-200/50 rounded-full appearance-none cursor-pointer focus:outline-none"
+                                                    style={{ backgroundImage: `linear-gradient(to right, rgba(148,163,184,0.85) ${vol * 100}%, transparent ${vol * 100}%)`, backgroundRepeat: 'no-repeat' }}
                                                 />
                                             </div>
                                         );
                                     })}
                                 </div>
                             </div>
-
                         </div>
-                    </motion.div>
-                </>
-            )}
-        </AnimatePresence>
+                </motion.div>
+            </div>
+        </>
     );
+
+    if (!isOpen || !canUsePortal) {
+        return null;
+    }
+
+    return createPortal(panelContent, document.body);
 };

@@ -304,7 +304,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
                         <motion.button
                             type='button'
                             onClick={handleConfirmSelection}
-                            className='w-11 h-11 rounded-xl bg-emerald-500/30 hover:bg-emerald-500/45 text-white backdrop-blur-xl border border-emerald-400/40 hover:border-emerald-400/60 flex items-center justify-center shadow-[0_4px_16px_rgba(16,185,129,0.2)] hover:shadow-[0_4px_24px_rgba(16,185,129,0.35)] transition-all'
+                            className={buttonBaseClassName}
                             aria-label='确认上传'
                             whileHover={{ y: -1.5, scale: 1.03 }}
                             whileTap={{ scale: 0.95 }}

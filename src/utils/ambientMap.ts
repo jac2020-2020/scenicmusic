@@ -27,8 +27,8 @@ export const getTimeAudioPath = (time: Time): string => {
 
 export const getSceneAudioPath = (scene: Scene): string => {
     const map: Record<Scene, string> = {
-        '沉浸阅读': 'reading.wav',
-        '读书聚会': 'book-party.wav',
+        '沉浸阅读': 'reading.mp3',
+        '读书聚会': 'book-party.mp3',
         '品酒时光': 'wine.mp3',
         '美食享受': 'food.mp3',
     };

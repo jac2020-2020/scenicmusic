@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import type { Time, Weather } from '@/types/environment';
+import type { Time } from '@/types/environment';
 
 interface CloudPart {
     cx: number;

@@ -57,7 +57,15 @@ const crossfade = (
 };
 
 export const useAmbientLayers = () => {
-    const { weather, time, scene, currentStep, volumes, audioUnlocked } = useEnvironmentStore();
+    const {
+        weather,
+        time,
+        scene,
+        currentStep,
+        volumes,
+        audioUnlocked,
+        playbackRunning,
+    } = useEnvironmentStore();
 
     // Weather layers
     const weatherRefs = useRef<Record<string, { a: HTMLAudioElement; b: HTMLAudioElement; active: 'A' | 'B' }>>({});
@@ -147,8 +155,12 @@ export const useAmbientLayers = () => {
 
         if (!audioUnlocked) return;
 
-        const stepAllowsWeatherTime = currentStep >= 1;
-        const stepAllowsScene = currentStep >= 2;
+        const canPlayInCurrentStep =
+            currentStep <= 3 ||
+            currentStep === 4 ||
+            (currentStep === 5 && playbackRunning);
+        const stepAllowsWeatherTime = canPlayInCurrentStep && currentStep >= 1;
+        const stepAllowsScene = canPlayInCurrentStep && currentStep >= 2;
 
         // 获取所有可能的天气/时间/场景
         const allWeathers: Weather[] = ['晴天', '多云', '阴天', '大雨', '小雨', '雪天'];
@@ -184,5 +196,5 @@ export const useAmbientLayers = () => {
         });
 
         return () => cleanups.forEach(fn => fn());
-    }, [weather, time, scene, currentStep, volumes, audioUnlocked]);
+    }, [weather, time, scene, currentStep, volumes, audioUnlocked, playbackRunning]);
 };

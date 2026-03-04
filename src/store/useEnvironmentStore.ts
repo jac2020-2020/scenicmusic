@@ -26,6 +26,10 @@ interface EnvironmentStore extends EnvironmentState {
     // 音频解锁（浏览器需用户点击后才允许播放）
     audioUnlocked: boolean;
     setAudioUnlocked: (v: boolean) => void;
+    playbackRunning: boolean;
+    setPlaybackRunning: (v: boolean) => void;
+    uploadLoadingActive: boolean;
+    setUploadLoadingActive: (v: boolean) => void;
 }
 
 export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
@@ -56,7 +60,7 @@ export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
     nextStep: () => set((state) => ({ currentStep: Math.min(state.currentStep + 1, 5) as Step })),
     prevStep: () => set((state) => ({ currentStep: Math.max(state.currentStep - 1, 1) as Step })),
     setStep: (step) => set({ currentStep: step }),
-    resetToHome: () => set((state) => ({
+    resetToHome: () => set(() => ({
         currentStep: 1,
         weather: '晴天',
         time: '正午',
@@ -66,9 +70,15 @@ export const useEnvironmentStore = create<EnvironmentStore>((set) => ({
         tags: undefined,
         // 重置时保留用户设置的音量，或根据需求重置
         // 这里选择保留，所以不覆盖 volume 状态
+        playbackRunning: false,
+        uploadLoadingActive: false,
     })),
 
     audioUnlocked: false,
     setAudioUnlocked: (v) => set({ audioUnlocked: v }),
+    playbackRunning: false,
+    setPlaybackRunning: (v) => set({ playbackRunning: v }),
+    uploadLoadingActive: false,
+    setUploadLoadingActive: (v) => set({ uploadLoadingActive: v }),
 }));
 

@@ -4,6 +4,7 @@ interface UseAudioPlayerOptions {
     src: string;
     fadeDurationMs?: number;
     initialVolume?: number;
+    loop?: boolean;
 }
 
 interface UseAudioPlayerReturn {
@@ -23,6 +24,7 @@ export const useAudioPlayer = ({
     src,
     fadeDurationMs = 1200,
     initialVolume = 0.7,
+    loop = false,
 }: UseAudioPlayerOptions): UseAudioPlayerReturn => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const fadeRafRef = useRef<number | null>(null);
@@ -30,6 +32,7 @@ export const useAudioPlayer = ({
     const fadeFromRef = useRef(0);
     const fadeToRef = useRef(0);
     const fadeResolverRef = useRef<(() => void) | null>(null);
+    const volumeRef = useRef(clamp(initialVolume, 0, 1));
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -38,6 +41,7 @@ export const useAudioPlayer = ({
 
     // 新增：允许外部改变 volume 时同步到 audio 元素，并忽略正在进行的淡入淡出（如果有必要）
     useEffect(() => {
+        volumeRef.current = volume;
         if (audioRef.current && audioRef.current.volume !== volume) {
             audioRef.current.volume = volume;
         }
@@ -58,6 +62,7 @@ export const useAudioPlayer = ({
     useEffect(() => {
         const audio = new Audio(src);
         audio.preload = 'metadata';
+        audio.loop = loop;
         audioRef.current = audio;
         audio.volume = volume;
 
@@ -89,7 +94,7 @@ export const useAudioPlayer = ({
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('ended', handleEnded);
         };
-    }, [src, stopFade]);
+    }, [loop, src, stopFade]);
 
     const fadeTo = useCallback((target: number) => {
         const audio = audioRef.current;
@@ -141,16 +146,16 @@ export const useAudioPlayer = ({
         stopFade();
         audio.volume = 0;
         await audio.play();
-        await fadeTo(volume);
-    }, [fadeTo, stopFade, volume]);
+        await fadeTo(volumeRef.current);
+    }, [fadeTo, stopFade]);
 
     const pause = useCallback(async () => {
         const audio = audioRef.current;
         if (!audio) return;
         await fadeTo(0);
         audio.pause();
-        audio.volume = volume;
-    }, [fadeTo, volume]);
+        audio.volume = volumeRef.current;
+    }, [fadeTo]);
 
     const seek = useCallback((nextTime: number) => {
         const audio = audioRef.current;
@@ -162,6 +167,7 @@ export const useAudioPlayer = ({
 
     const setVolume = useCallback((nextVolume: number) => {
         const safe = clamp(nextVolume, 0, 1);
+        volumeRef.current = safe;
         setVolumeState(safe);
         if (audioRef.current) {
             audioRef.current.volume = safe;

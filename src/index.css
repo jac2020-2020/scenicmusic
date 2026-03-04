@@ -37,7 +37,50 @@
     font-family: 'SweiDartSansCJKjp', 'Noto Sans SC', sans-serif !important;
 }
 
+.volume-panel-zh,
+.volume-panel-zh * {
+    font-family: 'Source Han Sans SC', 'Source Han Sans CN', 'Noto Sans SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.loading-zh,
+.loading-zh * {
+    font-family: 'Source Han Sans SC', 'Source Han Sans CN', 'Noto Sans SC', 'Microsoft YaHei', sans-serif !important;
+    font-style: normal !important;
+}
+
+/* 历史记录页中文统一使用思源黑体 */
+.record-page-zh,
+.record-page-zh * {
+    font-family: 'Source Han Sans SC', 'Source Han Sans CN', 'Noto Sans SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.volume-panel-zh .volume-en-title {
+    font-family: 'Playfair Display', 'Times New Roman', Georgia, serif !important;
+    letter-spacing: 0.14em;
+}
+
 @layer utilities {
+    .pb-safe {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+        width: 10px;
+        height: 10px;
+        border-radius: 9999px;
+        background: rgb(148 163 184);
+        border: 0;
+        appearance: none;
+    }
+
+    .volume-slider::-moz-range-thumb {
+        width: 10px;
+        height: 10px;
+        border-radius: 9999px;
+        background: rgb(148 163 184);
+        border: 0;
+    }
+
     .scrollbar-hide {
         /* IE and Edge */
         -ms-overflow-style: none;

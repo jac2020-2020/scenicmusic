@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
+import { DynamicBackground } from '@/features/environment/DynamicBackground';
 
 interface UploadLoadingProps {
     isResolved: boolean;
@@ -11,47 +12,72 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
     isResolved,
     onReadyToContinue,
 }) => {
-    const { weather, time, scene, mood, photoUrl } = useEnvironmentStore();
+    const { weather, time, scene, mood } = useEnvironmentStore();
     const [progress, setProgress] = useState(0);
-    const [textIndex, setTextIndex] = useState(0);
-    const [showPulse, setShowPulse] = useState(false);
-    const [choiceIndex, setChoiceIndex] = useState(0);
+    const [isExiting, setIsExiting] = useState(false);
     const hasCompletedRef = useRef(false);
-    const mountedAtRef = useRef<number>(Date.now());
     const minDurationTimerRef = useRef<number | null>(null);
     const [hasMinDuration, setHasMinDuration] = useState(false);
 
-    const textSequence = useMemo(() => {
-        switch (weather) {
-            case '大雨':
-            case '小雨':
-                return ['雨滴正在勾勒轮廓...', '光影正在分离前景...', '情绪标签即将生成...'];
-            case '晴天':
-                return ['阳光正在提取细节...', '暖色层正在稳定...', '旋律正在靠近...'];
-            case '多云':
-            case '阴天':
-                return ['云层正在解析场景...', '层次正在重建...', '情绪纹理正在收敛...'];
-            case '雪天':
-                return ['雪花正在凝结轮廓...', '冷暖对比正在融合...', '安静频段正在浮现...'];
-            default:
-                return ['正在感知画面情绪...', '正在提取空间特征...', '正在匹配氛围旋律...'];
-        }
-    }, [weather]);
+    const floatingTextItems = useMemo(() => {
+        const words: string[] = [weather, time, scene];
+        if (mood) words.push(mood);
 
-    const choiceSequence = useMemo(() => {
-        const base = [
-            `天气 · ${weather}`,
-            `时段 · ${time}`,
-            `场景 · ${scene}`,
-        ];
-        if (mood) {
-            base.push(`心情 · ${mood}`);
+        const items = [];
+        for (let i = 0; i < 28; i++) {
+            const word = words[i % words.length];
+            const depth = Math.random();
+            const layer = depth < 0.38 ? 'back' : depth < 0.75 ? 'mid' : 'front';
+            const layerConfig = {
+                back: {
+                    opacity: 0.04 + Math.random() * 0.08,
+                    blur: 3 + Math.random() * 3.5,
+                    brightness: 0.9,
+                    shadow: 0,
+                    zIndex: 1,
+                },
+                mid: {
+                    opacity: 0.14 + Math.random() * 0.16,
+                    blur: 1 + Math.random() * 1.5,
+                    brightness: 1,
+                    shadow: 0.08,
+                    zIndex: 2,
+                },
+                front: {
+                    opacity: 0.34 + Math.random() * 0.28,
+                    blur: 0.2 + Math.random() * 0.5,
+                    brightness: 1.08,
+                    shadow: 0.16,
+                    zIndex: 3,
+                },
+            }[layer];
+
+            items.push({
+                id: `${word}-${i}`,
+                text: word.split(''),
+                startY: Math.random() < 0.3 ? Math.random() * 80 : -20 - Math.random() * 50,
+                endY: 120 + Math.random() * 20,
+                startX: Math.random() * 90 + 5,
+                endX: (Math.random() - 0.5) * 5,
+                delay: Math.random() < 0.5 ? 0 : Math.random() * 3,
+                duration: Math.random() * 5 + 6 + (layer === 'back' ? 1.5 : 0),
+                scale:
+                    layer === 'back'
+                        ? 0.64 + Math.random() * 0.25
+                        : layer === 'mid'
+                            ? 0.82 + Math.random() * 0.2
+                            : 1.0 + Math.random() * 0.25,
+                baseOpacity: layerConfig.opacity,
+                blurPx: layerConfig.blur,
+                brightness: layerConfig.brightness,
+                shadowAlpha: layerConfig.shadow,
+                zIndex: layerConfig.zIndex,
+            });
         }
-        return base;
-    }, [mood, scene, time, weather]);
+        return items;
+    }, [weather, time, scene, mood]);
 
     useEffect(() => {
-        mountedAtRef.current = Date.now();
         const minDurationMs = 2300;
         minDurationTimerRef.current = window.setTimeout(() => {
             setHasMinDuration(true);
@@ -84,135 +110,39 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
     }, [isResolved]);
 
     useEffect(() => {
-        if (textSequence.length <= 1) return;
-        const interval = window.setInterval(() => {
-            setTextIndex(prev => (prev + 1) % textSequence.length);
-        }, 1200);
-        return () => window.clearInterval(interval);
-    }, [textSequence]);
-
-    useEffect(() => {
-        if (choiceSequence.length <= 1) return;
-        const interval = window.setInterval(() => {
-            setChoiceIndex(prev => (prev + 1) % choiceSequence.length);
-        }, 520);
-        return () => window.clearInterval(interval);
-    }, [choiceSequence]);
-
-    useEffect(() => {
-        if (hasCompletedRef.current || progress < 99.9 || !hasMinDuration) return;
+        // 不再依赖进度百分比阈值，避免在低帧率/长时停留后卡在加载页
+        if (hasCompletedRef.current || !isResolved || !hasMinDuration) return;
 
         hasCompletedRef.current = true;
-        setShowPulse(true);
+        setProgress(100);
+        setIsExiting(true);
         const timer = window.setTimeout(() => {
             onReadyToContinue();
-        }, 520);
+        }, 380);
 
         return () => window.clearTimeout(timer);
-    }, [onReadyToContinue, progress]);
+    }, [hasMinDuration, isResolved, onReadyToContinue]);
 
     return (
-        <div className='relative w-full max-w-md mx-auto aspect-video rounded-2xl overflow-hidden flex flex-col items-center justify-center'>
-            {/* 模糊的背景图 */}
-            {photoUrl && (
-                <motion.div
-                    className='absolute inset-0 w-full h-full bg-cover bg-center'
-                    style={{ backgroundImage: `url(${photoUrl})` }}
-                    initial={{ filter: 'blur(0px)' }}
-                    animate={{
-                        filter: isResolved ? 'blur(24px)' : 'blur(18px)',
-                        scale: isResolved ? 1.05 : 1.02,
-                    }}
-                    transition={{ duration: 0.8, ease: 'easeInOut' }}
-                />
-            )}
-
-            {/* 遮罩层 */}
-            <div className='absolute inset-0 bg-black/42 backdrop-blur-sm' />
+        <div className='relative w-full min-h-screen overflow-hidden'>
+            <DynamicBackground />
 
             {/* 动画元素 */}
-            <div className='relative z-10 flex flex-col items-center justify-center h-full w-full p-6 text-center'>
-                {/* 环形进度条 */}
-                <div className='relative w-24 h-24 mb-8'>
-                    <motion.div
-                        className='absolute inset-0 rounded-full border border-white/20'
-                        animate={{ scale: [1, 1.06, 1], opacity: [0.45, 0.7, 0.45] }}
-                        transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                    {showPulse && (
-                        <motion.div
-                            initial={{ scale: 1, opacity: 0.7 }}
-                            animate={{ scale: 1.85, opacity: 0 }}
-                            transition={{ duration: 0.5, ease: 'easeOut' }}
-                            className='absolute inset-0 rounded-full border border-white/65'
-                        />
-                    )}
-                    <svg className='w-full h-full transform -rotate-90' viewBox='0 0 100 100'>
-                        <circle
-                            cx='50'
-                            cy='50'
-                            r='45'
-                            fill='transparent'
-                            stroke='rgba(255,255,255,0.12)'
-                            strokeWidth='2'
-                        />
-                        <motion.circle
-                            cx='50'
-                            cy='50'
-                            r='45'
-                            fill='transparent'
-                            stroke='rgba(255,255,255,0.86)'
-                            strokeWidth='2.4'
-                            strokeDasharray='283'
-                            strokeDashoffset={283 - (283 * progress) / 100}
-                            transition={{ duration: 0.08, ease: 'linear' }}
-                        />
-                    </svg>
-                    <div className='absolute inset-0 flex items-center justify-center'>
-                        <span className='text-xl font-light tracking-wider'>{Math.round(progress)}%</span>
-                    </div>
-                </div>
-
-                {/* 动态文本 */}
-                <AnimatePresence mode='wait'>
-                    <motion.p
-                        key={`${textSequence[textIndex]}-${textIndex}`}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.45, ease: 'easeOut' }}
-                        className='text-lg font-light tracking-widest text-white/90'
+            <motion.div
+                className='relative z-10 flex flex-col items-center justify-center min-h-screen w-full px-8 text-center'
+                animate={{ opacity: isExiting ? 0 : 1 }}
+                transition={{ duration: 0.28, ease: 'easeOut' }}
+            >
+                {/* 纯文本进度 */}
+                <div className='relative flex items-center justify-center mb-8 h-24'>
+                    <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className='text-5xl font-light tracking-wider text-white/90'
+                        style={{ fontFamily: "'Playfair Display', 'Times New Roman', serif" }}
                     >
-                        {textSequence[textIndex]}
-                    </motion.p>
-                </AnimatePresence>
-
-                {/* 之前选择项：逐个浮现再模糊 */}
-                <div className='relative mt-4 h-8 w-full overflow-hidden'>
-                    <AnimatePresence mode='wait'>
-                        <motion.p
-                            key={`${choiceSequence[choiceIndex]}-${choiceIndex}`}
-                            initial={{
-                                opacity: 0,
-                                y: 10,
-                                filter: 'blur(12px)',
-                            }}
-                            animate={{
-                                opacity: 0.75,
-                                y: 0,
-                                filter: 'blur(0px)',
-                            }}
-                            exit={{
-                                opacity: 0,
-                                y: -8,
-                                filter: 'blur(16px)',
-                            }}
-                            transition={{ duration: 0.48, ease: 'easeInOut' }}
-                            className='absolute inset-0 text-sm tracking-[0.24em] text-white/70'
-                        >
-                            {choiceSequence[choiceIndex]}
-                        </motion.p>
-                    </AnimatePresence>
+                        {Math.round(progress)}%
+                    </motion.span>
                 </div>
 
                 {/* 光斑动画 (mix-blend-mode) */}
@@ -227,7 +157,70 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
                     }}
                     transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 />
-            </div>
+            </motion.div>
+
+            {/* 下雨般掉落的文字 (放置在最上层 z-50) */}
+            <motion.div
+                className='loading-zh absolute inset-0 z-50 pointer-events-none overflow-hidden'
+                animate={{ opacity: isExiting ? 0 : 1 }}
+                transition={{ duration: 0.24, ease: 'easeOut' }}
+            >
+                {floatingTextItems.map((item) => (
+                    <motion.div
+                        key={item.id}
+                        className='absolute text-white tracking-[0.3em] flex flex-col items-center justify-start gap-1'
+                        style={{
+                            left: `${item.startX}%`,
+                            fontSize: `${item.scale * 1.2}rem`,
+                            fontFamily:
+                                '\'Source Han Sans SC\', \'Source Han Sans CN\', \'Noto Sans SC\', \'Microsoft YaHei\', sans-serif',
+                            filter: `blur(${item.blurPx}px) brightness(${item.brightness})`,
+                            textShadow:
+                                item.shadowAlpha > 0
+                                    ? `0 0 10px rgba(255, 255, 255, ${item.shadowAlpha})`
+                                    : 'none',
+                            zIndex: item.zIndex,
+                        }}
+                        initial={{
+                            opacity: 0,
+                            y: `${item.startY}vh`,
+                            x: 0,
+                        }}
+                        animate={{
+                            opacity: [0, item.baseOpacity, item.baseOpacity, 0],
+                            y: [`${item.startY}vh`, `${item.endY}vh`],
+                            x: [0, item.endX],
+                        }}
+                        transition={{
+                            duration: item.duration,
+                            delay: item.delay,
+                            repeat: Infinity,
+                            ease: 'linear', // Use linear for falling effect
+                            // If an item starts on screen, make sure it has opacity immediately
+                            opacity: {
+                                duration: item.duration,
+                                delay: item.delay,
+                                repeat: Infinity,
+                                ease: 'linear',
+                                times: [0, 0.1, 0.8, 1] // Fade in quickly, stay, fade out at the end
+                            }
+                        }}
+                    >
+                        {item.text.map((char, charIdx) => (
+                            <span
+                                key={charIdx}
+                                style={{
+                                    writingMode: 'vertical-rl',
+                                    fontFamily:
+                                        "'Source Han Sans SC', 'Source Han Sans CN', 'Noto Sans SC', 'Microsoft YaHei', sans-serif"
+                                }}
+                            >
+                                {char}
+                            </span>
+                        ))}
+                    </motion.div>
+                ))}
+            </motion.div>
         </div>
     );
 };

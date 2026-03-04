@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { PhotoUploader } from './PhotoUploader.tsx';
@@ -7,11 +7,16 @@ import { uploadImageAndRecognize } from '@/services/upload';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 export const UploadStep: React.FC = () => {
-    const { nextStep, prevStep, setPhotoUrl, setTags } = useEnvironmentStore();
+    const { nextStep, prevStep, setPhotoUrl, setTags, setUploadLoadingActive } = useEnvironmentStore();
     const [isUploading, setIsUploading] = useState(false);
     const [isUploadResolved, setIsUploadResolved] = useState(false);
     const [isFrameTransitioning, setIsFrameTransitioning] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
+
+    useEffect(() => {
+        setUploadLoadingActive(isUploading);
+        return () => setUploadLoadingActive(false);
+    }, [isUploading, setUploadLoadingActive]);
 
     const handleUpload = async (file: File) => {
         setIsUploading(true);
@@ -37,7 +42,7 @@ export const UploadStep: React.FC = () => {
     };
 
     const handleLoadingReady = () => {
-        if (!isUploadResolved) return;
+        setIsUploading(false);
         nextStep();
     };
 
@@ -50,7 +55,7 @@ export const UploadStep: React.FC = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="w-full"
+                        className='fixed inset-0 z-40'
                     >
                         <UploadLoading
                             isResolved={isUploadResolved}
@@ -129,20 +134,17 @@ export const UploadStep: React.FC = () => {
                                         </motion.button>
                                         <motion.button
                                             type='button'
-                                            onClick={nextStep}
-                                            whileHover={{ scale: 1.04 }}
-                                            whileTap={{ scale: 0.96 }}
-                                            className='w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-all'
+                                            disabled={true}
+                                            className='w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-all opacity-80 cursor-not-allowed'
                                             style={{
-                                                background: 'linear-gradient(145deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.04) 100%)',
+                                                background: 'linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 100%)',
                                                 backdropFilter: 'blur(16px) saturate(150%)',
                                                 WebkitBackdropFilter: 'blur(16px) saturate(150%)',
-                                                border: '0.5px solid rgba(255,255,255,0.2)',
-                                                boxShadow: 'inset 0 0.5px 0.5px rgba(255,255,255,0.35), 0 2px 8px rgba(0,0,0,0.08)',
+                                                border: '0.5px solid rgba(255,255,255,0.15)',
                                             }}
-                                            aria-label='跳过上传并下一步'
+                                            aria-label='请先上传照片'
                                         >
-                                            <ArrowRight size={22} className='sm:w-6 sm:h-6' />
+                                            <ArrowRight size={22} className='sm:w-6 sm:h-6 text-white/70' />
                                         </motion.button>
                                     </div>
                                 </motion.div>

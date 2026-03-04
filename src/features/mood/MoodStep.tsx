@@ -44,14 +44,14 @@ export const MoodStep: React.FC = () => {
     // 舒缓的漂浮动画 - 稍微明显的幅度，更长的周期
     const floatAnimations = useMemo(() => {
         return MOOD_OPTIONS.map((_, index) => ({
-            y: [0, -8 - (index % 3) * 3, 0],
-            x: [0, (index % 2 === 0 ? 4 : -4), 0],
+            yFrames: [0, -8 - (index % 3) * 3, 0],
+            xFrames: [0, (index % 2 === 0 ? 4 : -4), 0],
             transition: {
                 duration: 6 + (index % 4) * 1.2,
                 repeat: Infinity,
-                ease: "easeInOut",
+                ease: 'easeInOut' as const,
                 delay: index * 0.5,
-            }
+            },
         }));
     }, []);
 
@@ -113,8 +113,8 @@ export const MoodStep: React.FC = () => {
                             animate={{
                                 opacity: 1,
                                 scale: isSelected ? 1.15 : 1,
-                                y: (floatAnimations[index].y as number) + offsetY,
-                                x: (floatAnimations[index].x as number) + offsetX,
+                                y: floatAnimations[index].yFrames.map(v => v + offsetY),
+                                x: floatAnimations[index].xFrames.map(v => v + offsetX),
                             }}
                             transition={{
                                 opacity: { duration: 0.5, delay: index * 0.1 },

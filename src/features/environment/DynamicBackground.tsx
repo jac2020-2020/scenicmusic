@@ -6,9 +6,12 @@ import { LensFlareEffect } from './LensFlareEffect';
 import { TimeEffects } from './TimeEffects';
 import { EnvironmentLighting } from './EnvironmentLighting';
 import { cn } from '@/utils/cn';
+import { useLocation } from 'react-router-dom';
 
 export const DynamicBackground: React.FC = () => {
     const { time, weather } = useEnvironmentStore();
+    const { pathname } = useLocation();
+    const shouldRenderParticles = pathname !== '/records';
 
     // 采用莫兰迪/低饱和度的自然色系
     const timeGradients: Record<string, string> = {
@@ -48,7 +51,7 @@ export const DynamicBackground: React.FC = () => {
             {/* 仅在多云时显示云层 */}
             {weather === '多云' && <CloudyEffect time={time} />}
 
-            <WeatherParticles weather={weather} time={time} />
+            {shouldRenderParticles && <WeatherParticles weather={weather} time={time} />}
         </div>
     );
 };
