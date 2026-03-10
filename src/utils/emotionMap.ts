@@ -17,7 +17,6 @@ const TIME_EMOTION: Record<Time, string[]> = {
     午后: ['活力', '通透'],
     傍晚: ['松弛', '余韵'],
     夜晚: ['沉浸', '柔和'],
-    凌晨: ['静谧', '希望'],
 };
 
 const SCENE_EMOTION: Record<Scene, string[]> = {

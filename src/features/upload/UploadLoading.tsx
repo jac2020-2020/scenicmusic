@@ -12,7 +12,7 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
     isResolved,
     onReadyToContinue,
 }) => {
-    const { weather, time, scene, mood } = useEnvironmentStore();
+    const { weather, time, scene } = useEnvironmentStore();
     const [progress, setProgress] = useState(0);
     const [isExiting, setIsExiting] = useState(false);
     const hasCompletedRef = useRef(false);
@@ -21,7 +21,6 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
 
     const floatingTextItems = useMemo(() => {
         const words: string[] = [weather, time, scene];
-        if (mood) words.push(mood);
 
         const items = [];
         for (let i = 0; i < 28; i++) {
@@ -75,7 +74,7 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
             });
         }
         return items;
-    }, [weather, time, scene, mood]);
+    }, [weather, time, scene]);
 
     useEffect(() => {
         const minDurationMs = 2300;

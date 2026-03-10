@@ -6,7 +6,7 @@ export const getWeatherAudioPath = (weather: Weather): string => {
     const map: Record<Weather, string> = {
         '晴天': 'sunny.mp3',
         '多云': 'cloudy.mp3',
-        '雨天': 'rain.mp3',
+        '雨天': 'rain-heavy.mp3',
     };
     return `${AUDIO_BASE}/weather/${map[weather]}`;
 };
@@ -17,7 +17,6 @@ export const getTimeAudioPath = (time: Time): string => {
         '午后': 'noon.mp3',
         '傍晚': 'dusk.mp3',
         '夜晚': 'night.mp3',
-        '凌晨': 'dawn.mp3',
     };
     return `${AUDIO_BASE}/time/${map[time]}`;
 };

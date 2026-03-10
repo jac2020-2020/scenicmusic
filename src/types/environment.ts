@@ -1,5 +1,5 @@
 export type Weather = '晴天' | '多云' | '雨天';
-export type Time = '清晨' | '午后' | '傍晚' | '夜晚' | '凌晨';
+export type Time = '清晨' | '午后' | '傍晚' | '夜晚';
 export type Scene = '阅读' | '诗会' | '小酌' | '美食';
 
 // 播放模式
@@ -12,6 +12,7 @@ export interface Track {
     artist: string;
     description: string;
     audioUrl: string;
+    poem?: string[];
 }
 
 // 歌单

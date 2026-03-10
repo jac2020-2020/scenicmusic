@@ -37,6 +37,20 @@ export const VolumePanel: React.FC<VolumePanelProps> = ({ isOpen, onClose }) => 
         weather, time, scene
     } = useEnvironmentStore();
 
+    // 根据时间筛选可调节的场景项：清晨隐藏“小酌/美食”，午后隐藏“小酌”，夜晚隐藏“美食”
+    const filteredScenes = React.useMemo(() => {
+        if (time === '清晨') {
+            return ALL_SCENES.filter(s => s.value !== '小酌' && s.value !== '美食');
+        }
+        if (time === '午后') {
+            return ALL_SCENES.filter(s => s.value !== '小酌');
+        }
+        if (time === '夜晚') {
+            return ALL_SCENES.filter(s => s.value !== '美食');
+        }
+        return ALL_SCENES;
+    }, [time]);
+
     const panelRef = useRef<HTMLDivElement>(null);
     const canUsePortal = typeof document !== 'undefined' && !!document.body;
     // 点击外部关闭
@@ -192,7 +206,7 @@ export const VolumePanel: React.FC<VolumePanelProps> = ({ isOpen, onClose }) => 
                         <div className="space-y-2">
                             <h4 className="volume-en-title text-[11px] font-semibold text-gray-400 tracking-widest uppercase mb-1">Scene</h4>
                             <div className="grid grid-cols-3 gap-2">
-                                {ALL_SCENES.map(item => {
+                                {filteredScenes.map(item => {
                                     const id = `scene_${item.value}`;
                                     const vol = getVolume(id, scene === item.value);
                                     return (

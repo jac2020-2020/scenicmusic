@@ -22,7 +22,7 @@ export const EnvironmentLighting: React.FC = () => {
                     transition={{ duration: 1.5 }}
                     className="absolute inset-0 mix-blend-multiply pointer-events-none"
                     style={{
-                        backgroundColor: time === '夜晚' || time === '凌晨' ? 'rgba(20, 30, 40, 0.6)' : 'rgba(100, 110, 120, 0.4)'
+                        backgroundColor: time === '夜晚' ? 'rgba(20, 30, 40, 0.6)' : 'rgba(100, 110, 120, 0.4)'
                     }}
                 />
             )}
@@ -37,7 +37,7 @@ export const EnvironmentLighting: React.FC = () => {
                     transition={{ duration: 1.5 }}
                     className="absolute inset-0 mix-blend-screen pointer-events-none"
                     style={{
-                        backgroundColor: time === '夜晚' || time === '凌晨' ? 'rgba(30, 40, 60, 0.2)' : 'rgba(200, 210, 220, 0.3)',
+                        backgroundColor: time === '夜晚' ? 'rgba(30, 40, 60, 0.2)' : 'rgba(200, 210, 220, 0.3)',
                         backdropFilter: 'blur(2px)' // 空气带微弱霜冻白雾
                     }}
                 />

@@ -13,7 +13,29 @@ const SCENE_OPTIONS: { value: Scene; icon: React.ReactNode }[] = [
 ];
 
 export const SceneStep: React.FC = () => {
-    const { scene, setScene, nextStep, prevStep } = useEnvironmentStore();
+    const { scene, setScene, nextStep, prevStep, time } = useEnvironmentStore();
+
+    // 根据时间筛选场景选项
+    const filteredOptions = React.useMemo(() => {
+        if (time === '清晨') {
+            return SCENE_OPTIONS.filter(opt => opt.value !== '小酌' && opt.value !== '美食');
+        }
+        if (time === '午后') {
+            return SCENE_OPTIONS.filter(opt => opt.value !== '小酌');
+        }
+        if (time === '夜晚') {
+            return SCENE_OPTIONS.filter(opt => opt.value !== '美食');
+        }
+        return SCENE_OPTIONS;
+    }, [time]);
+
+    // 如果当前选中的场景不在可用选项中，自动重置为第一个可用选项（通常是阅读）
+    React.useEffect(() => {
+        const isValid = filteredOptions.some(opt => opt.value === scene);
+        if (!isValid && filteredOptions.length > 0) {
+            setScene(filteredOptions[0].value);
+        }
+    }, [time, scene, filteredOptions, setScene]);
 
     return (
         <motion.div
@@ -34,7 +56,7 @@ export const SceneStep: React.FC = () => {
                     showTitle={false}
                     iconPosition='left'
                     arcSide='left'
-                    options={SCENE_OPTIONS}
+                    options={filteredOptions}
                     value={scene}
                     onChange={setScene}
                     className='w-full scale-[0.8] sm:scale-90 md:scale-100 -ml-8 sm:-ml-16 md:-ml-24'

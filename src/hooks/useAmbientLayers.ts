@@ -5,6 +5,7 @@ import type { Weather, Time, Scene } from '@/types/environment';
 
 const LAYER_VOLUME = 0.12; // 每层音效基础音量，三层叠加约 0.36
 const CROSSFADE_MS = 1800; // 切换淡入淡出时长
+const VOL_MULT_WEATHER_RAINY = 1.0;
 
 // 午后音频音量进一步减小
 const VOL_MULT_TIME_AFTERNOON = 0.5;
@@ -170,7 +171,8 @@ export const useAmbientLayers = () => {
         allWeathers.forEach(w => {
             const isActive = stepAllowsWeatherTime && (weather === w || (volumes[`weather_${w}`] ?? 0) > 0);
             const baseVol = weather === w && volumes[`weather_${w}`] === undefined ? 1 : (volumes[`weather_${w}`] ?? 0);
-            const c = playLayer(weatherRefs, w, getWeatherAudioPath(w), isActive, baseVol, 1);
+            const mult = w === '雨天' ? VOL_MULT_WEATHER_RAINY : 1;
+            const c = playLayer(weatherRefs, w, getWeatherAudioPath(w), isActive, baseVol, mult);
             if (c) cleanups.push(c);
         });
 

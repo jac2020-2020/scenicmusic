@@ -1,83 +1,100 @@
 import type { Playlist, Weather, Time, Scene } from '@/types/environment';
+import { MUSIC_CONFIG } from './musicConfig';
+import { TRACK_META } from './trackMeta';
 
 // 歌单命名映射
 const PLAYLIST_NAMES: Record<Weather, Record<Time, Record<Scene, string>>> = {
     '晴天': {
-        '清晨': { '阅读': '晨光书语', '诗会': '晨曦诗韵', '小酌': '朝霞醉语', '美食': '朝食暖阳' },
-        '午后': { '阅读': '暖阳书卷', '诗会': '晴午诗风', '小酌': '阳春微醉', '美食': '午膳时光' },
-        '傍晚': { '阅读': '余晖书香', '诗会': '暮光诗行', '小酌': '夕酌', '美食': '晚飨' },
-        '夜晚': { '阅读': '星夜书声', '诗会': '夜吟', '小酌': '杯中月', '美食': '夜宴' },
-        '凌晨': { '阅读': '夜阑书语', '诗会': '夜半诗声', '小酌': '深夜醉', '美食': '夜宵' },
+        '清晨': { '阅读': '晨光初照', '诗会': '晓风吟咏', '小酌': '朝露微醺', '美食': '晨间雅膳' },
+        '午后': { '阅读': '暖阳展卷', '诗会': '晴日诗情', '小酌': '午后清酌', '美食': '午间盛宴' },
+        '傍晚': { '阅读': '暮色书香', '诗会': '夕照吟哦', '小酌': '黄昏独醉', '美食': '晚风佳肴' },
+        '夜晚': { '阅读': '星河夜读', '诗会': '月下诗会', '小酌': '夜间小酌', '美食': '夜宴流光' },
     },
     '多云': {
-        '清晨': { '阅读': '晓云书声', '诗会': '晨雾诗语', '小酌': '雾晨醉', '美食': '早云餐' },
-        '午后': { '阅读': '云下午茶', '诗会': '云中诗会', '小酌': '云淡风轻', '美食': '云餐' },
-        '傍晚': { '阅读': '暮云书卷', '诗会': '晚云诗话', '小酌': '暮色微醺', '美食': '暮餐' },
-        '夜晚': { '阅读': '夜云书斋', '诗会': '云夜诗眠', '小酌': '云夜独酌', '美食': '夜宵' },
-        '凌晨': { '阅读': '夜云书声', '诗会': '云夜诗语', '小酌': '云夜醉', '美食': '云宵' },
+        '清晨': { '阅读': '云霭书声', '诗会': '晨雾诗心', '小酌': '云间清酌', '美食': '云端早味' },
+        '午后': { '阅读': '云卷云舒', '诗会': '云中雅集', '小酌': '云淡风轻', '美食': '云间飨宴' },
+        '傍晚': { '阅读': '暮云凝香', '诗会': '晚云诗话', '小酌': '暮色微醺', '美食': '云暮晚宴' },
+        '夜晚': { '阅读': '云夜静读', '诗会': '云深诗意', '小酌': '夜色微醺', '美食': '夜云佳肴' },
     },
     '雨天': {
-        '清晨': { '阅读': '雨晨书声', '诗会': '晨雨诗韵', '小酌': '雨朝醉', '美食': '雨朝食' },
-        '午后': { '阅读': '雨下午茶', '诗会': '雨中诗会', '小酌': '雨醉', '美食': '雨午膳' },
-        '傍晚': { '阅读': '雨暮书声', '诗会': '暮雨诗行', '小酌': '雨夕醉', '美食': '雨晚飨' },
-        '夜晚': { '阅读': '雨夜书香', '诗会': '夜雨诗眠', '小酌': '夜雨对酌', '美食': '雨夜宴' },
-        '凌晨': { '阅读': '夜雨书声', '诗会': '雨夜诗韵', '小酌': '雨夜醉', '美食': '雨宵' },
+        '清晨': { '阅读': '卷旁听雨', '诗会': '雨韵诗情', '小酌': '雨晨浅醉', '美食': '雨润晨食' },
+        '午后': { '阅读': '雨声伴读', '诗会': '雨中诗会', '小酌': '雨落杯中', '美食': '雨日午膳' },
+        '傍晚': { '阅读': '暮雨书怀', '诗会': '晚雨诗兴', '小酌': '雨夕独酌', '美食': '雨夜晚宴' },
+        '夜晚': { '阅读': '夜雨书灯', '诗会': '雨夜诗魂', '小酌': '夜雨小酌', '美食': '雨夜盛宴' },
     },
 };
 
-// 生成占位歌曲数据
-const generatePlaceholderTracks = (playlistName: string): Playlist['tracks'] => {
-    return [
-        {
-            id: `${playlistName}-1`,
-            name: `${playlistName} - 曲目一`,
-            artist: '待添加',
-            description: '点击添加您的音乐素材',
-            audioUrl: '',
-        },
-        {
-            id: `${playlistName}-2`,
-            name: `${playlistName} - 曲目二`,
-            artist: '待添加',
-            description: '点击添加您的音乐素材',
-            audioUrl: '',
-        },
-        {
-            id: `${playlistName}-3`,
-            name: `${playlistName} - 曲目三`,
-            artist: '待添加',
-            description: '点击添加您的音乐素材',
-            audioUrl: '',
-        },
-        {
-            id: `${playlistName}-4`,
-            name: `${playlistName} - 曲目四`,
-            artist: '待添加',
-            description: '点击添加您的音乐素材',
-            audioUrl: '',
-        },
-        {
-            id: `${playlistName}-5`,
-            name: `${playlistName} - 曲目五`,
-            artist: '待添加',
-            description: '点击添加您的音乐素材',
-            audioUrl: '',
-        },
-    ];
+// 音乐文件基础路径
+const MUSIC_BASE_URL = '';
+
+const SCENE_DIR_MAP: Record<Scene, string> = {
+    '阅读': 'reading',
+    '诗会': 'gathering',
+    '小酌': 'drink',
+    '美食': 'food',
+};
+
+const WEATHER_DIR_MAP: Record<Weather, string> = {
+    '晴天': 'sunny',
+    '多云': 'cloudy',
+    '雨天': 'rainy',
+};
+
+const TIME_DIR_MAP: Record<Time, string> = {
+    '清晨': 'morning',
+    '午后': 'afternoon',
+    '傍晚': 'evening',
+    '夜晚': 'night',
+};
+
+// 生成歌曲数据
+const generateTracks = (weather: Weather, time: Time, scene: Scene): Playlist['tracks'] => {
+    const weatherDir = WEATHER_DIR_MAP[weather];
+    const timeDir = TIME_DIR_MAP[time];
+    const sceneDir = SCENE_DIR_MAP[scene];
+    
+    // 从配置文件中读取该组合的文件名列表
+    const fileNames = MUSIC_CONFIG[weather]?.[time]?.[scene] || [];
+    
+    return fileNames.map((fileName, i) => {
+        // 去掉文件后缀作为歌名
+        const songName = fileName.replace(/\.[^/.]+$/, "");
+        const poem = TRACK_META[weather]?.[time]?.[scene]?.[fileName]?.poem;
+        
+        return {
+            id: `${weatherDir}-${timeDir}-${sceneDir}-${i + 1}`,
+            name: songName,
+            artist: 'Scenic Music',
+            description: '沉浸式背景音乐',
+            poem,
+            // 组合音频 URL: 基础路径 + 天气 + 时段 + 场景 + 文件名
+            audioUrl: `${MUSIC_BASE_URL}/music/${weatherDir}/${timeDir}/${sceneDir}/${fileName}`,
+        };
+    });
 };
 
 // 生成所有歌单
 export const playlists: Playlist[] = [];
 
 const weatherList: Weather[] = ['晴天', '多云', '雨天'];
-const timeList: Time[] = ['清晨', '午后', '傍晚', '夜晚', '凌晨'];
+const timeList: Time[] = ['清晨', '午后', '傍晚', '夜晚'];
 const sceneList: Scene[] = ['阅读', '诗会', '小酌', '美食'];
 
 let idCounter = 1;
 
 for (const weather of weatherList) {
     for (const time of timeList) {
-        for (const scene of sceneList) {
+        // 按时段过滤场景：
+        // 清晨：阅读、诗会；午后：阅读、诗会、美食；傍晚：全部；夜晚：阅读、诗会、小酌
+        let scenesForTime: Scene[] = sceneList;
+        if (time === '清晨') {
+            scenesForTime = sceneList.filter(s => s !== '小酌' && s !== '美食');
+        } else if (time === '午后') {
+            scenesForTime = sceneList.filter(s => s !== '小酌');
+        } else if (time === '夜晚') {
+            scenesForTime = sceneList.filter(s => s !== '美食');
+        }
+        for (const scene of scenesForTime) {
             const name = PLAYLIST_NAMES[weather][time][scene];
             playlists.push({
                 id: `playlist-${idCounter++}`,
@@ -85,7 +102,7 @@ for (const weather of weatherList) {
                 weather,
                 time,
                 scene,
-                tracks: generatePlaceholderTracks(name),
+                tracks: generateTracks(weather, time, scene),
             });
         }
     }

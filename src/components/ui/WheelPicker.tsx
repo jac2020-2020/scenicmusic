@@ -231,7 +231,7 @@ export function WheelPicker<T extends string>({
                                             className={cn(
                                                 'font-sans',
                                                 isActive
-                                                    ? 'text-2xl sm:text-3xl md:text-4xl tracking-wide font-normal'
+                                                    ? 'text-2xl sm:text-3xl md:text-3xl tracking-wide font-normal'
                                                     : 'text-lg sm:text-xl md:text-2xl tracking-normal font-extralight',
                                             )}
                                             style={{ color: isActive ? 'white' : 'rgba(255,255,255,0.45)' }}

@@ -52,7 +52,7 @@ export const useEnvironmentStore = create<EnvironmentStore>((set, get) => ({
 
     // 默认音量设定
     volumes: {},
-    musicVolume: 0.7,
+    musicVolume: 0.6,
 
     setWeather: (weather) => set({ weather }),
     setTime: (time) => set({ time }),

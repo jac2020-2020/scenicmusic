@@ -4,34 +4,30 @@ import { GlassPanel } from '@/components/ui/GlassPanel';
 import { cn } from '@/utils/cn';
 import type { Weather, Time, Scene } from '@/types/environment';
 import {
-    Sun, Cloud, CloudDrizzle, CloudRain, Snowflake, CloudFog,
-    Sunrise, SunMedium, Sunset, Moon, MoonStar,
+    Sun, Cloud, CloudRain,
+    Sunrise, SunMedium, Sunset, Moon,
     BookOpen, Users, Wine, Utensils
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const WEATHER_OPTIONS: { value: Weather; icon: React.ReactNode }[] = [
     { value: '晴天', icon: <Sun size={20} /> },
-    { value: '阴天', icon: <Cloud size={20} /> },
-    { value: '阴天', icon: <CloudFog size={20} /> },
-    { value: '小雨', icon: <CloudDrizzle size={20} /> },
+    { value: '多云', icon: <Cloud size={20} /> },
     { value: '雨天', icon: <CloudRain size={20} /> },
-    { value: '雪天', icon: <Snowflake size={20} /> },
 ];
 
 const TIME_OPTIONS: { value: Time; icon: React.ReactNode }[] = [
     { value: '清晨', icon: <Sunrise size={20} /> },
-    { value: '正午', icon: <SunMedium size={20} /> },
+    { value: '午后', icon: <SunMedium size={20} /> },
     { value: '傍晚', icon: <Sunset size={20} /> },
     { value: '夜晚', icon: <Moon size={20} /> },
-    { value: '凌晨', icon: <MoonStar size={20} /> },
 ];
 
 const SCENE_OPTIONS: { value: Scene; icon: React.ReactNode }[] = [
-    { value: '沉浸阅读', icon: <BookOpen size={20} /> },
-    { value: '读书聚会', icon: <Users size={20} /> },
-    { value: '品酒时光', icon: <Wine size={20} /> },
-    { value: '美食享受', icon: <Utensils size={20} /> },
+    { value: '阅读', icon: <BookOpen size={20} /> },
+    { value: '诗会', icon: <Users size={20} /> },
+    { value: '小酌', icon: <Wine size={20} /> },
+    { value: '美食', icon: <Utensils size={20} /> },
 ];
 
 interface OptionGroupProps<T> {

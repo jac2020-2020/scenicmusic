@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Music, Pause, ListOrdered, Shuffle, Repeat, Repeat1 } from 'lucide-react';
+import { X, Music, Pause, Play, ListOrdered, Shuffle, Repeat, Repeat1 } from 'lucide-react';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import type { PlayMode } from '@/types/environment';
 
@@ -26,6 +26,8 @@ export const PlaylistPanel = () => {
         setCurrentTrackIndex,
         playMode,
         cyclePlayMode,
+        playbackRunning,
+        setPlaybackRunning,
     } = useEnvironmentStore();
 
     const handleTrackClick = (index: number) => {
@@ -124,9 +126,21 @@ export const PlaylistPanel = () => {
                                     {/* 序号/播放图标 */}
                                     <div className="w-8 flex-shrink-0">
                                         {index === currentTrackIndex ? (
-                                            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                                                <Pause size={14} className="text-white" />
-                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setPlaybackRunning(!playbackRunning);
+                                                }}
+                                                className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center"
+                                                aria-label={playbackRunning ? '暂停' : '播放'}
+                                            >
+                                                {playbackRunning ? (
+                                                    <Pause size={14} className="text-white" />
+                                                ) : (
+                                                    <Play size={14} className="text-white" />
+                                                )}
+                                            </button>
                                         ) : (
                                             <span className="text-white/40 text-sm">{String(index + 1).padStart(2, '0')}</span>
                                         )}
@@ -137,9 +151,6 @@ export const PlaylistPanel = () => {
                                         <h3 className={`text-base truncate ${index === currentTrackIndex ? 'text-white' : 'text-white/80'}`} style={{ fontFamily: "'Noto Sans SC', sans-serif" }}>
                                             {track.name}
                                         </h3>
-                                        <p className="text-sm text-white/50 truncate" style={{ fontFamily: "'Noto Sans SC', sans-serif" }}>
-                                            {track.artist} · {track.description}
-                                        </p>
                                     </div>
                                 </motion.button>
                             ))}

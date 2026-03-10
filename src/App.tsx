@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { DynamicBackground } from '@/features/environment/DynamicBackground';
 import { SceneForeground } from '@/features/environment/SceneForeground';
 import { WeatherTimeStep } from '@/features/environment/WeatherTimeStep';
@@ -8,9 +9,44 @@ import { useAmbientLayers } from '@/hooks/useAmbientLayers';
 import { AudioUnlockOverlay } from '@/components/AudioUnlockOverlay';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Route, Routes, useLocation } from 'react-router-dom';
+import { ListMusic } from 'lucide-react';
+import { getPlaylist } from '@/data/playlists';
 
 const HomeFlow = () => {
-    const { currentStep } = useEnvironmentStore();
+    const { currentStep, setWeather, setTime, setScene, setStep, setCurrentPlaylist } = useEnvironmentStore();
+    const [isQuickOpen, setIsQuickOpen] = useState(false);
+    const quickRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (quickRef.current && !quickRef.current.contains(e.target as Node)) {
+                setIsQuickOpen(false);
+            }
+        };
+        if (isQuickOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isQuickOpen]);
+
+    const jumpToPlaylist = (key: 'rain-read' | 'evening-food' | 'night-drink') => {
+        const mapping = {
+            'rain-read': { weather: '雨天', time: '午后', scene: '阅读' },
+            'evening-food': { weather: '晴天', time: '傍晚', scene: '美食' },
+            'night-drink': { weather: '晴天', time: '夜晚', scene: '小酌' },
+        } as const;
+
+        const target = mapping[key];
+        setWeather(target.weather);
+        setTime(target.time);
+        setScene(target.scene);
+        const playlist = getPlaylist(target.weather, target.time, target.scene);
+        if (playlist) {
+            setCurrentPlaylist(playlist);
+        }
+        setStep(3);
+        setIsQuickOpen(false);
+    };
 
     return (
         <>
@@ -33,6 +69,65 @@ const HomeFlow = () => {
                         SCENE
                     </p>
                     <h1 className='hetian-font text-4xl sm:text-5xl md:text-7xl tracking-wider relative z-10'>境</h1>
+                    {currentStep < 3 && (
+                        <div ref={quickRef} className='absolute top-full mt-5 left-1/2 -translate-x-1/2 pointer-events-auto z-50'>
+                            <button
+                                type='button'
+                                onClick={() => setIsQuickOpen(v => !v)}
+                                className='flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white/75 hover:text-white transition-colors border border-white/15 bg-white/5 hover:bg-white/10 backdrop-blur-md'
+                                aria-label='快速歌单'
+                            >
+                                <ListMusic size={16} className='text-white/70' />
+                                <span className='text-xs sm:text-sm tracking-wide' style={{ fontFamily: "'Noto Sans SC', sans-serif" }}>
+                                    快速歌单
+                                </span>
+                            </button>
+                            <AnimatePresence>
+                                {isQuickOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                                        transition={{ duration: 0.18, ease: 'easeOut' }}
+                                        className='absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-2xl overflow-hidden border border-white/15 z-50'
+                                        style={{
+                                            background: 'linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.08) 100%)',
+                                            backdropFilter: 'blur(20px) saturate(160%)',
+                                            WebkitBackdropFilter: 'blur(20px) saturate(160%)',
+                                            boxShadow: '0 10px 30px rgba(0,0,0,0.18)',
+                                        }}
+                                    >
+                                        <div className='p-2 flex flex-col gap-1'>
+                                            <button
+                                                type='button'
+                                                onClick={() => jumpToPlaylist('rain-read')}
+                                                className='w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/85'
+                                                style={{ fontFamily: "'Noto Sans SC', sans-serif" }}
+                                            >
+                                                雨声伴读
+                                            </button>
+                                            <button
+                                                type='button'
+                                                onClick={() => jumpToPlaylist('evening-food')}
+                                                className='w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/85'
+                                                style={{ fontFamily: "'Noto Sans SC', sans-serif" }}
+                                            >
+                                                晚风佳肴
+                                            </button>
+                                            <button
+                                                type='button'
+                                                onClick={() => jumpToPlaylist('night-drink')}
+                                                className='w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/85'
+                                                style={{ fontFamily: "'Noto Sans SC', sans-serif" }}
+                                            >
+                                                夜间小酌
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
                 </motion.div>
 
                 <div className='flex-1 flex flex-col justify-center mt-12 sm:mt-16 md:mt-24 pb-8 md:pb-0'>

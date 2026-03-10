@@ -22,7 +22,7 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 
 export const useAudioPlayer = ({
     src,
-    fadeDurationMs = 1200,
+    fadeDurationMs = 320,
     initialVolume = 0.7,
     loop = false,
 }: UseAudioPlayerOptions): UseAudioPlayerReturn => {
@@ -33,6 +33,7 @@ export const useAudioPlayer = ({
     const fadeToRef = useRef(0);
     const fadeResolverRef = useRef<(() => void) | null>(null);
     const volumeRef = useRef(clamp(initialVolume, 0, 1));
+    const opTokenRef = useRef(0);
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -59,12 +60,18 @@ export const useAudioPlayer = ({
         fadeStartRef.current = null;
     }, []);
 
+    const nextOpToken = useCallback(() => {
+        opTokenRef.current += 1;
+        return opTokenRef.current;
+    }, []);
+
     useEffect(() => {
+        nextOpToken();
         const audio = new Audio(src);
-        audio.preload = 'metadata';
+        audio.preload = 'auto';
         audio.loop = loop;
         audioRef.current = audio;
-        audio.volume = volume;
+        audio.volume = volumeRef.current;
 
         const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
         const handleLoadedMeta = () => setDuration(Number.isFinite(audio.duration) ? audio.duration : 0);
@@ -84,6 +91,7 @@ export const useAudioPlayer = ({
         audio.addEventListener('ended', handleEnded);
 
         return () => {
+            nextOpToken();
             stopFade();
             audio.pause();
             audio.src = '';
@@ -94,7 +102,13 @@ export const useAudioPlayer = ({
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('ended', handleEnded);
         };
-    }, [loop, src, stopFade]);
+    }, [nextOpToken, src, stopFade]);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.loop = loop;
+        }
+    }, [loop]);
 
     const fadeTo = useCallback((target: number) => {
         const audio = audioRef.current;
@@ -143,19 +157,29 @@ export const useAudioPlayer = ({
     const play = useCallback(async () => {
         const audio = audioRef.current;
         if (!audio) return;
+        const opToken = nextOpToken();
         stopFade();
-        audio.volume = 0;
-        await audio.play();
+        audio.volume = Math.min(volumeRef.current, 0.2);
+        try {
+            await audio.play();
+        } catch (err) {
+            const e = err as { name?: string } | undefined;
+            if (e?.name === 'AbortError' || e?.name === 'NotAllowedError') return;
+            throw err;
+        }
+        if (opToken !== opTokenRef.current) return;
         await fadeTo(volumeRef.current);
-    }, [fadeTo, stopFade]);
+    }, [fadeTo, nextOpToken, stopFade]);
 
     const pause = useCallback(async () => {
         const audio = audioRef.current;
         if (!audio) return;
+        const opToken = nextOpToken();
         await fadeTo(0);
+        if (opToken !== opTokenRef.current) return;
         audio.pause();
         audio.volume = volumeRef.current;
-    }, [fadeTo]);
+    }, [fadeTo, nextOpToken]);
 
     const seek = useCallback((nextTime: number) => {
         const audio = audioRef.current;
