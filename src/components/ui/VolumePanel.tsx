@@ -12,7 +12,7 @@ interface VolumePanelProps {
 
 const ALL_WEATHERS: { value: Weather; icon: React.ReactNode; label: string }[] = [
     { value: '晴天', icon: <Sun size={18} />, label: '晴天' },
-    { value: '阴天', icon: <Cloud size={18} />, label: '阴天' },
+    { value: '多云', icon: <Cloud size={18} />, label: '阴天' },
     { value: '雨天', icon: <CloudRain size={18} />, label: '雨天' },
 ];
 

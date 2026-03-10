@@ -153,14 +153,14 @@ export const useAmbientLayers = () => {
         if (!audioUnlocked) return;
 
         const canPlayInCurrentStep =
-            currentStep <= 2 ||
-            currentStep === 3 ||
-            (currentStep === 4 && playbackRunning);
+            currentStep <= 1 ||
+            currentStep === 2 ||
+            (currentStep === 3 && playbackRunning);
         const stepAllowsWeatherTime = canPlayInCurrentStep && currentStep >= 1;
         const stepAllowsScene = canPlayInCurrentStep && currentStep >= 2;
 
         // 获取所有可能的天气/时间/场景
-        const allWeathers: Weather[] = ['晴天', '阴天', '雨天'];
+        const allWeathers: Weather[] = ['晴天', '多云', '雨天'];
         const allTimes: Time[] = ['清晨', '午后', '傍晚', '夜晚'];
         const allScenes: Scene[] = ['阅读', '诗会', '小酌', '美食'];
 

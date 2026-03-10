@@ -8,7 +8,7 @@ interface ResolveEmotionOptions {
 
 const WEATHER_EMOTION: Record<Weather, string[]> = {
     晴天: ['明朗', '轻快'],
-    阴天: ['舒展', '平衡'],
+    多云: ['舒展', '平衡'],
     雨天: ['包裹感', '深沉'],
 };
 
@@ -17,6 +17,7 @@ const TIME_EMOTION: Record<Time, string[]> = {
     午后: ['活力', '通透'],
     傍晚: ['松弛', '余韵'],
     夜晚: ['沉浸', '柔和'],
+    凌晨: ['静谧', '希望'],
 };
 
 const SCENE_EMOTION: Record<Scene, string[]> = {

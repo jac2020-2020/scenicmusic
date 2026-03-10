@@ -70,6 +70,13 @@ const getCloudColors = (time: Time) => {
                 shadow: '60, 75, 100',
                 opacity: 0.25,
             };
+        case '凌晨':
+            return {
+                highlight: '180, 190, 210',
+                mid: '150, 160, 180',
+                shadow: '100, 110, 130',
+                opacity: 0.3,
+            };
     }
 };
 

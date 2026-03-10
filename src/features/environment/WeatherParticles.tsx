@@ -12,21 +12,6 @@ interface RainDrop {
     width: number;
 }
 
-interface SnowFlake {
-    x: number;
-    y: number;
-    z: number;
-    speedY: number;
-    speedX: number;
-    size: number;
-    opacity: number;
-    swayAmplitude: number;
-    swayFrequency: number;
-    swayOffset: number;
-    rotation: number;
-    rotationSpeed: number;
-}
-
 interface ButtonObstacle {
     x: number;
     y: number;
@@ -42,7 +27,6 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationFrameRef = useRef<number>(0);
     const rainDropsRef = useRef<RainDrop[]>([]);
-    const snowFlakesRef = useRef<SnowFlake[]>([]);
     const windRef = useRef(0);
     const timeRef = useRef(0);
     const buttonsRef = useRef<ButtonObstacle[]>([]);
@@ -132,33 +116,21 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
             }
         };
 
-        // 初始化雪花
-        const initSnow = () => {
-            snowFlakesRef.current = [];
-            const count = 60;
-
-            for (let i = 0; i < count; i++) {
-                const z = Math.random();
-                snowFlakesRef.current.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    z,
-                    speedY: 0.4 + Math.random() * 0.4 + z * 0.3,
-                    speedX: (Math.random() - 0.5) * 0.3,
-                    size: 1 + Math.random() * 2 + z * 2,
-                    opacity: 0.2 + z * 0.25,
-                    swayAmplitude: 10 + Math.random() * 20,
-                    swayFrequency: 0.001 + Math.random() * 0.002,
-                    swayOffset: Math.random() * Math.PI * 2,
-                    rotation: Math.random() * Math.PI * 2,
-                    rotationSpeed: (Math.random() - 0.5) * 0.02,
-                });
-            }
-        };
-
         if (weather === '雨天') {
             initRain();
         }
+
+        // 获取受当前时段影响的环境光颜色 - 提取到render外部避免每帧重复创建
+        const getParticleColor = (alpha: number) => {
+            if (time === '夜晚') {
+                return `rgba(200, 210, 230, ${alpha})`; // 冷蓝
+            } else if (time === '傍晚') {
+                // 傍晚的背景是烟粉到淡橘色，所以粒子需要更白、更亮一些，带极其微弱的暖光，否则会隐形
+                return `rgba(255, 240, 230, ${Math.min(1, alpha * 1.5)})`;
+            } else {
+                return `rgba(255, 255, 255, ${alpha})`; // 自然白
+            }
+        };
 
         const render = () => {
             ctx.clearRect(0, 0, width, height);
@@ -169,18 +141,6 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
 
             // 模拟风的变化
             windRef.current = Math.sin(timeRef.current * 0.0001) * 0.5;
-
-            // 获取受当前时段影响的环境光颜色
-            const getParticleColor = (alpha: number) => {
-                if (time === '夜晚') {
-                    return `rgba(200, 210, 230, ${alpha})`; // 冷蓝
-                } else if (time === '傍晚') {
-                    // 傍晚的背景是烟粉到淡橘色，所以粒子需要更白、更亮一些，带极其微弱的暖光，否则会隐形
-                    return `rgba(255, 240, 230, ${Math.min(1, alpha * 1.5)})`;
-                } else {
-                    return `rgba(255, 255, 255, ${alpha})`; // 自然白
-                }
-            };
 
             if (weather === '雨天') {
                 rainDropsRef.current.forEach(drop => {
@@ -269,92 +229,6 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
                     }
                     if (drop.x > width + 50) drop.x = -50;
                     if (drop.x < -50) drop.x = width + 50;
-                });
-            }
-
-            if (false) { // 雪天已删除
-                snowFlakesRef.current.forEach(flake => {
-                    const sway = Math.sin(timeRef.current * flake.swayFrequency + flake.swayOffset) * flake.swayAmplitude * (1 + flake.z);
-                    const windOffset = windRef.current * 20 * (1 + flake.z);
-
-                    const drawX = flake.x + sway + windOffset;
-                    const drawY = flake.y;
-
-                    // 检测碰撞
-                    const hitBtn = checkButtonCollision(drawX, drawY);
-                    if (hitBtn) {
-                        // 计算碰撞法线
-                        const dx = drawX - hitBtn.x;
-                        const dy = drawY - hitBtn.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        const nx = dx / dist;
-                        const ny = dy / dist;
-
-                        // 雪花极轻柔地被推开，主要沿表面滑过
-                        flake.speedX = nx * 0.3 + (Math.random() - 0.5) * 0.2;
-                        flake.speedY = Math.abs(flake.speedY) * 0.5; // 明显减速，模拟被挡住
-
-                        // 位置调整
-                        flake.x = hitBtn.x + nx * hitBtn.radius - sway - windOffset;
-                        flake.y = hitBtn.y + ny * hitBtn.radius;
-
-                        // 轻微的旋转变化
-                        flake.rotationSpeed += (Math.random() - 0.5) * 0.01;
-                    }
-
-                    ctx.save();
-                    ctx.translate(drawX, drawY);
-                    ctx.rotate(flake.rotation);
-
-                    // 绘制雪花
-                    ctx.beginPath();
-                    if (flake.z > 0.6) {
-                        const spikes = 6;
-                        const outerRadius = flake.size;
-                        const innerRadius = flake.size * 0.4;
-                        for (let i = 0; i < spikes * 2; i++) {
-                            const r = i % 2 === 0 ? outerRadius : innerRadius;
-                            const angle = (i / (spikes * 2)) * Math.PI * 2;
-                            const x = Math.cos(angle) * r;
-                            const y = Math.sin(angle) * r;
-                            if (i === 0) ctx.moveTo(x, y);
-                            else ctx.lineTo(x, y);
-                        }
-                        ctx.closePath();
-                        ctx.strokeStyle = getParticleColor(flake.opacity);
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    } else {
-                        ctx.arc(0, 0, flake.size * 0.6, 0, Math.PI * 2);
-                        ctx.fillStyle = getParticleColor(flake.opacity);
-                        ctx.fill();
-                    }
-
-                    ctx.restore();
-
-                    // 更新
-                    flake.y += flake.speedY;
-                    flake.x += flake.speedX;
-                    flake.rotation += flake.rotationSpeed;
-
-                    // 逐渐恢复正常状态
-                    flake.speedX *= 0.98;
-                    flake.rotationSpeed *= 0.98;
-                    const targetSpeedY = 0.8 + flake.z * 0.6;
-                    if (flake.speedY < targetSpeedY) {
-                        flake.speedY += 0.02;
-                    }
-
-                    // 重置
-                    if (flake.y > height + 10) {
-                        flake.y = -10 - Math.random() * 50;
-                        flake.x = Math.random() * width;
-                        flake.speedY = targetSpeedY;
-                        flake.speedX = (Math.random() - 0.5) * 0.3;
-                        flake.rotationSpeed = (Math.random() - 0.5) * 0.02;
-                    }
-                    if (flake.x > width + 50) flake.x = -50;
-                    if (flake.x < -50) flake.x = width + 50;
                 });
             }
 

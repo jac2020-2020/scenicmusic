@@ -37,6 +37,13 @@ const getFlareConfig = (time: Time) => {
                 color: '180, 200, 255',
                 intensity: 0 // 夜晚几乎没有光晕
             };
+        case '凌晨':
+            return {
+                x: '30%', y: '30%',
+                angle: 20,
+                color: '200, 210, 230',
+                intensity: 0.3 // 凌晨微光
+            };
     }
 };
 

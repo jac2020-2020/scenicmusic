@@ -9,10 +9,10 @@ import {
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const WEATHER_OPTIONS: { value: Weather; icon: React.ReactNode }[] = [
-    { value: '晴天', icon: <Sun size={18} /> },
-    { value: '阴天', icon: <Cloud size={18} /> },
-    { value: '雨天', icon: <CloudRain size={18} /> },
+const WEATHER_OPTIONS: { value: Weather; icon: React.ReactNode; label: string }[] = [
+    { value: '晴天', icon: <Sun size={18} />, label: '晴天' },
+    { value: '多云', icon: <Cloud size={18} />, label: '阴天' },
+    { value: '雨天', icon: <CloudRain size={18} />, label: '雨天' },
 ];
 
 const TIME_OPTIONS: { value: Time; icon: React.ReactNode }[] = [

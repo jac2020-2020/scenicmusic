@@ -2,7 +2,6 @@ import { DynamicBackground } from '@/features/environment/DynamicBackground';
 import { SceneForeground } from '@/features/environment/SceneForeground';
 import { WeatherTimeStep } from '@/features/environment/WeatherTimeStep';
 import { SceneStep } from '@/features/environment/SceneStep';
-import { MoodStep } from '@/features/mood/MoodStep';
 import { PlaybackStep } from '@/features/player/PlaybackStep';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { useAmbientLayers } from '@/hooks/useAmbientLayers';
@@ -15,7 +14,7 @@ const HomeFlow = () => {
 
     return (
         <>
-            {currentStep >= 4 && <SceneForeground />}
+            {currentStep >= 3 && <SceneForeground />}
             <main className='relative z-10 h-full w-full flex flex-col p-6 md:p-12 justify-between'>
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -45,17 +44,12 @@ const HomeFlow = () => {
                         )}
                         {currentStep === 2 && (
                             <motion.div key='step2' className='w-full'>
-                                <MoodStep />
-                            </motion.div>
-                        )}
-                        {currentStep === 3 && (
-                            <motion.div key='step3' className='w-full'>
                                 <SceneStep />
                             </motion.div>
                         )}
-                        {currentStep === 4 && (
+                        {currentStep === 3 && (
                             <motion.div
-                                key='step4'
+                                key='step3'
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}

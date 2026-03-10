@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 export const EnvironmentLighting: React.FC = () => {
     const { time, weather } = useEnvironmentStore();
 
-    const isOvercast = weather === '阴天' || weather === '小雨' || weather === '雨天';
-    const isSnow = weather === '雪天';
-    const isSunnyNoon = time === '正午' && weather === '晴天';
+    const isOvercast = weather === '多云' || weather === '雨天';
+    const isSnow = false; // 雪天暂未实现
+    const isSunnyNoon = time === '午后' && weather === '晴天';
     const isSunset = time === '傍晚';
 
     return (

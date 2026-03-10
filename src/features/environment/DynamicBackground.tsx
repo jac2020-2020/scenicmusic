@@ -47,9 +47,8 @@ export const DynamicBackground: React.FC = () => {
             {/* 天气特效层 - 仅晴天午后显示镜头光晕 */}
             {weather === '晴天' && time === '午后' && <LensFlareEffect time={time} />}
 
-            {/* 仅在阴天时显示云层 */}
-            {weather === '阴天' && <CloudyEffect time={time} />}
-
+            {/* 天气特效层 */}
+            {weather === '多云' && <CloudyEffect time={time} />}
             {shouldRenderParticles && weather === '雨天' && <WeatherParticles weather={weather} time={time} />}
         </div>
     );

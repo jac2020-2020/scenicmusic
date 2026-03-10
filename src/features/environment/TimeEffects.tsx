@@ -8,15 +8,15 @@ export const TimeEffects: React.FC = () => {
     // 根据天气情况精细化调整天体透明度
     const getOpacityClass = () => {
         if (weather === '晴天') return 'opacity-100';
-        if (weather === '阴天') return 'opacity-60 blur-[2px]';
-        // 阴天、雨天、雪天时，天体（日月）被云层严重遮挡，仅保留微弱轮廓
+        if (weather === '多云') return 'opacity-60 blur-[2px]';
+        // 雨天时，天体（日月）被云层严重遮挡，仅保留微弱轮廓
         return 'opacity-10';
     };
 
     const opacityClass = getOpacityClass();
 
-    // 阴雨天气（阴天、雨天、雪天）时星空不可见
-    const isOvercast = ['阴天', '雨天', '小雨', '雪天'].includes(weather);
+    // 多云、雨天时星空不可见
+    const isOvercast = weather === '多云' || weather === '雨天';
 
     return (
         <div className={`absolute inset-0 pointer-events-none transition-all duration-[1500ms] ease-in-out ${opacityClass}`}>
