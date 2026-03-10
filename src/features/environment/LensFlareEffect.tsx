@@ -16,7 +16,7 @@ const getFlareConfig = (time: Time) => {
                 color: '255, 230, 180', // 偏暖黄
                 intensity: 0.65 // 适中强度
             };
-        case '正午':
+        case '午后':
             return {
                 x: '75%', y: '15%', // 右上
                 angle: -25,
@@ -31,12 +31,11 @@ const getFlareConfig = (time: Time) => {
                 intensity: 0.7 // 适中强度
             };
         case '夜晚':
-        case '凌晨':
             return {
-                x: '80%', y: '20%', 
+                x: '80%', y: '20%',
                 angle: -35,
-                color: '180, 200, 255', 
-                intensity: 0 // 夜晚凌晨几乎没有光晕
+                color: '180, 200, 255',
+                intensity: 0 // 夜晚几乎没有光晕
             };
     }
 };

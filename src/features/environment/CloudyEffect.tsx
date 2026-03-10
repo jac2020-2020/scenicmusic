@@ -49,7 +49,7 @@ const getCloudColors = (time: Time) => {
                 shadow: '200, 180, 190',
                 opacity: 0.45, // 降低整体透明度
             };
-        case '正午':
+        case '午后':
             return {
                 highlight: '255, 255, 255',
                 mid: '245, 245, 250',
@@ -64,7 +64,6 @@ const getCloudColors = (time: Time) => {
                 opacity: 0.5,
             };
         case '夜晚':
-        case '凌晨':
             return {
                 highlight: '140, 160, 190',
                 mid: '100, 120, 150',

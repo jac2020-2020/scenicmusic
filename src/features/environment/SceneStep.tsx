@@ -6,10 +6,10 @@ import { BookOpen, Users, Wine, Utensils, ArrowLeft, ArrowRight } from 'lucide-r
 import { motion } from 'framer-motion';
 
 const SCENE_OPTIONS: { value: Scene; icon: React.ReactNode }[] = [
-    { value: '沉浸阅读', icon: <BookOpen size={18} /> },
-    { value: '读书聚会', icon: <Users size={18} /> },
-    { value: '品酒时光', icon: <Wine size={18} /> },
-    { value: '美食享受', icon: <Utensils size={18} /> },
+    { value: '阅读', icon: <BookOpen size={18} /> },
+    { value: '诗会', icon: <Users size={18} /> },
+    { value: '小酌', icon: <Wine size={18} /> },
+    { value: '美食', icon: <Utensils size={18} /> },
 ];
 
 export const SceneStep: React.FC = () => {

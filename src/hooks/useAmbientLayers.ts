@@ -6,12 +6,9 @@ import type { Weather, Time, Scene } from '@/types/environment';
 const LAYER_VOLUME = 0.12; // 每层音效基础音量，三层叠加约 0.36
 const CROSSFADE_MS = 1800; // 切换淡入淡出时长
 
-// 雪天、正午、清晨三个的音频音量进一步减小
-const VOL_MULT_WEATHER_SNOW = 0.4;
-const VOL_MULT_TIME_NOON = 0.5;
+// 午后音频音量进一步减小
+const VOL_MULT_TIME_AFTERNOON = 0.5;
 const VOL_MULT_TIME_MORNING = 0.5;
-// 雪天时，所有时段音频大幅降低
-const VOL_MULT_TIME_WHEN_SNOW = 0.2;
 
 const getPathFromSrc = (src: string): string => {
     if (!src) return '';
@@ -156,16 +153,16 @@ export const useAmbientLayers = () => {
         if (!audioUnlocked) return;
 
         const canPlayInCurrentStep =
-            currentStep <= 3 ||
-            currentStep === 4 ||
-            (currentStep === 5 && playbackRunning);
+            currentStep <= 2 ||
+            currentStep === 3 ||
+            (currentStep === 4 && playbackRunning);
         const stepAllowsWeatherTime = canPlayInCurrentStep && currentStep >= 1;
         const stepAllowsScene = canPlayInCurrentStep && currentStep >= 2;
 
         // 获取所有可能的天气/时间/场景
-        const allWeathers: Weather[] = ['晴天', '多云', '阴天', '大雨', '小雨', '雪天'];
-        const allTimes: Time[] = ['清晨', '正午', '傍晚', '夜晚', '凌晨'];
-        const allScenes: Scene[] = ['沉浸阅读', '读书聚会', '品酒时光', '美食享受'];
+        const allWeathers: Weather[] = ['晴天', '阴天', '雨天'];
+        const allTimes: Time[] = ['清晨', '午后', '傍晚', '夜晚'];
+        const allScenes: Scene[] = ['阅读', '诗会', '小酌', '美食'];
 
         const cleanups: Array<() => void> = [];
 
@@ -173,17 +170,14 @@ export const useAmbientLayers = () => {
         allWeathers.forEach(w => {
             const isActive = stepAllowsWeatherTime && (weather === w || (volumes[`weather_${w}`] ?? 0) > 0);
             const baseVol = weather === w && volumes[`weather_${w}`] === undefined ? 1 : (volumes[`weather_${w}`] ?? 0);
-            const mult = w === '雪天' ? VOL_MULT_WEATHER_SNOW : 1;
-            const c = playLayer(weatherRefs, w, getWeatherAudioPath(w), isActive, baseVol, mult);
+            const c = playLayer(weatherRefs, w, getWeatherAudioPath(w), isActive, baseVol, 1);
             if (c) cleanups.push(c);
         });
 
         allTimes.forEach(t => {
             const isActive = stepAllowsWeatherTime && (time === t || (volumes[`time_${t}`] ?? 0) > 0);
             const baseVol = time === t && volumes[`time_${t}`] === undefined ? 1 : (volumes[`time_${t}`] ?? 0);
-            const mult = weather === '雪天'
-                ? VOL_MULT_TIME_WHEN_SNOW
-                : (t === '正午' ? VOL_MULT_TIME_NOON : t === '清晨' ? VOL_MULT_TIME_MORNING : 1);
+            const mult = t === '午后' ? VOL_MULT_TIME_AFTERNOON : t === '清晨' ? VOL_MULT_TIME_MORNING : 1;
             const c = playLayer(timeRefs, t, getTimeAudioPath(t), isActive, baseVol, mult);
             if (c) cleanups.push(c);
         });

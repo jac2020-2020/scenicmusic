@@ -3,9 +3,7 @@ import { SceneForeground } from '@/features/environment/SceneForeground';
 import { WeatherTimeStep } from '@/features/environment/WeatherTimeStep';
 import { SceneStep } from '@/features/environment/SceneStep';
 import { MoodStep } from '@/features/mood/MoodStep';
-import { UploadStep } from '@/features/upload/UploadStep';
 import { PlaybackStep } from '@/features/player/PlaybackStep';
-import { RecordList } from '@/features/record/RecordList';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { useAmbientLayers } from '@/hooks/useAmbientLayers';
 import { AudioUnlockOverlay } from '@/components/AudioUnlockOverlay';
@@ -47,28 +45,17 @@ const HomeFlow = () => {
                         )}
                         {currentStep === 2 && (
                             <motion.div key='step2' className='w-full'>
-                                <SceneStep />
+                                <MoodStep />
                             </motion.div>
                         )}
                         {currentStep === 3 && (
                             <motion.div key='step3' className='w-full'>
-                                <MoodStep />
+                                <SceneStep />
                             </motion.div>
                         )}
                         {currentStep === 4 && (
                             <motion.div
                                 key='step4'
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className='w-full'
-                            >
-                                <UploadStep />
-                            </motion.div>
-                        )}
-                        {currentStep === 5 && (
-                            <motion.div
-                                key='step5'
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
@@ -81,14 +68,6 @@ const HomeFlow = () => {
                 </div>
             </main>
         </>
-    );
-};
-
-const RecordPage = () => {
-    return (
-        <main className='relative z-10 min-h-screen w-full px-4 py-6 pb-safe flex items-start sm:items-center'>
-            <RecordList />
-        </main>
     );
 };
 
@@ -110,7 +89,6 @@ function App() {
                 >
                     <Routes location={location}>
                         <Route path='/' element={<HomeFlow />} />
-                        <Route path='/records' element={<RecordPage />} />
                     </Routes>
                 </motion.div>
             </AnimatePresence>

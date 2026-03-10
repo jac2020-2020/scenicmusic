@@ -2,28 +2,24 @@ import React from 'react';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { WheelPicker } from '@/components/ui/WheelPicker';
 import type { Weather, Time } from '@/types/environment';
-import { 
-    Sun, Cloud, CloudDrizzle, CloudRain, Snowflake, CloudFog,
-    Sunrise, SunMedium, Sunset, Moon, MoonStar
+import {
+    Sun, Cloud, CloudRain,
+    Sunrise, SunMedium, Sunset, Moon
 } from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const WEATHER_OPTIONS: { value: Weather; icon: React.ReactNode }[] = [
     { value: '晴天', icon: <Sun size={18} /> },
-    { value: '多云', icon: <Cloud size={18} /> },
-    { value: '阴天', icon: <CloudFog size={18} /> },
-    { value: '小雨', icon: <CloudDrizzle size={18} /> },
-    { value: '大雨', icon: <CloudRain size={18} /> },
-    { value: '雪天', icon: <Snowflake size={18} /> },
+    { value: '阴天', icon: <Cloud size={18} /> },
+    { value: '雨天', icon: <CloudRain size={18} /> },
 ];
 
 const TIME_OPTIONS: { value: Time; icon: React.ReactNode }[] = [
     { value: '清晨', icon: <Sunrise size={18} /> },
-    { value: '正午', icon: <SunMedium size={18} /> },
+    { value: '午后', icon: <SunMedium size={18} /> },
     { value: '傍晚', icon: <Sunset size={18} /> },
     { value: '夜晚', icon: <Moon size={18} /> },
-    { value: '凌晨', icon: <MoonStar size={18} /> },
 ];
 
 export const WeatherTimeStep: React.FC = () => {

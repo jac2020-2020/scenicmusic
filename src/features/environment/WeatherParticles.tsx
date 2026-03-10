@@ -114,7 +114,7 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
         // 初始化雨滴
         const initRain = () => {
             rainDropsRef.current = [];
-            const isHeavyRain = weather === '大雨';
+            const isHeavyRain = weather === '雨天';
             const count = isHeavyRain ? 80 : 35;
 
             for (let i = 0; i < count; i++) {
@@ -156,10 +156,8 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
             }
         };
 
-        if (weather === '大雨' || weather === '小雨') {
+        if (weather === '雨天') {
             initRain();
-        } else if (weather === '雪天') {
-            initSnow();
         }
 
         const render = () => {
@@ -174,17 +172,17 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
 
             // 获取受当前时段影响的环境光颜色
             const getParticleColor = (alpha: number) => {
-                if (time === '夜晚' || time === '凌晨') {
+                if (time === '夜晚') {
                     return `rgba(200, 210, 230, ${alpha})`; // 冷蓝
                 } else if (time === '傍晚') {
                     // 傍晚的背景是烟粉到淡橘色，所以粒子需要更白、更亮一些，带极其微弱的暖光，否则会隐形
-                    return `rgba(255, 240, 230, ${Math.min(1, alpha * 1.5)})`; 
+                    return `rgba(255, 240, 230, ${Math.min(1, alpha * 1.5)})`;
                 } else {
                     return `rgba(255, 255, 255, ${alpha})`; // 自然白
                 }
             };
 
-            if (weather === '大雨' || weather === '小雨') {
+            if (weather === '雨天') {
                 rainDropsRef.current.forEach(drop => {
                     const windOffset = windRef.current * (1 + drop.z);
                     const endX = drop.x + drop.speedX + windOffset * 5;
@@ -253,7 +251,7 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
                     drop.x += drop.speedX + windOffset;
 
                     // 恢复正常的下落速度（反弹后逐渐恢复）
-                    const isHeavyRain = weather === '大雨';
+                    const isHeavyRain = weather === '雨天';
                     const targetSpeedY = (isHeavyRain ? 12 : 6) + drop.z * 6;
                     if (drop.speedY < targetSpeedY) {
                         drop.speedY += 0.5; // 逐渐加速回到正常速度
@@ -274,7 +272,7 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
                 });
             }
 
-            if (weather === '雪天') {
+            if (false) { // 雪天已删除
                 snowFlakesRef.current.forEach(flake => {
                     const sway = Math.sin(timeRef.current * flake.swayFrequency + flake.swayOffset) * flake.swayAmplitude * (1 + flake.z);
                     const windOffset = windRef.current * 20 * (1 + flake.z);
@@ -371,7 +369,7 @@ export const WeatherParticles: React.FC<WeatherParticlesProps> = ({ weather, tim
         };
     }, [weather, time, updateButtonPositions]);
 
-    if (!['大雨', '小雨', '雪天'].includes(weather)) return null;
+    if (weather !== '雨天') return null;
 
     return (
         <canvas

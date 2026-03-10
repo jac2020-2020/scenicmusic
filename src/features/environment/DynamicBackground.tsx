@@ -16,10 +16,9 @@ export const DynamicBackground: React.FC = () => {
     // 采用莫兰迪/低饱和度的自然色系
     const timeGradients: Record<string, string> = {
         '清晨': 'from-[#B5C1C5] to-[#E3D9C9]', // 雾霾蓝 到 晨曦燕麦色
-        '正午': 'from-[#90A8C3] to-[#DAE5EC]', // 柔和晴空蓝 到 地平线白
+        '午后': 'from-[#90A8C3] to-[#DAE5EC]', // 柔和晴空蓝 到 地平线白
         '傍晚': 'from-[#A28B99] to-[#DFB9A9]', // 烟粉色 到 淡橘桃色
         '夜晚': 'from-[#2C3643] to-[#161B22]', // 调亮后的深岩灰蓝 到 深灰黑
-        '凌晨': 'from-[#1E252D] to-[#0D1115]', // 调亮后的幽深黑灰 到 极暗灰
     };
 
     return (
@@ -45,13 +44,13 @@ export const DynamicBackground: React.FC = () => {
             {/* 时段天体特效层 */}
             <TimeEffects />
 
-            {/* 天气特效层 - 仅晴天正午显示镜头光晕 */}
-            {weather === '晴天' && time === '正午' && <LensFlareEffect time={time} />}
+            {/* 天气特效层 - 仅晴天午后显示镜头光晕 */}
+            {weather === '晴天' && time === '午后' && <LensFlareEffect time={time} />}
 
-            {/* 仅在多云时显示云层 */}
-            {weather === '多云' && <CloudyEffect time={time} />}
+            {/* 仅在阴天时显示云层 */}
+            {weather === '阴天' && <CloudyEffect time={time} />}
 
-            {shouldRenderParticles && <WeatherParticles weather={weather} time={time} />}
+            {shouldRenderParticles && weather === '雨天' && <WeatherParticles weather={weather} time={time} />}
         </div>
     );
 };

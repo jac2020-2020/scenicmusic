@@ -3,7 +3,7 @@ import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { GlassPanel } from '@/components/ui/GlassPanel';
 import { cn } from '@/utils/cn';
 import type { Weather, Time, Scene } from '@/types/environment';
-import { 
+import {
     Sun, Cloud, CloudDrizzle, CloudRain, Snowflake, CloudFog,
     Sunrise, SunMedium, Sunset, Moon, MoonStar,
     BookOpen, Users, Wine, Utensils
@@ -12,10 +12,10 @@ import { motion } from 'framer-motion';
 
 const WEATHER_OPTIONS: { value: Weather; icon: React.ReactNode }[] = [
     { value: '晴天', icon: <Sun size={20} /> },
-    { value: '多云', icon: <Cloud size={20} /> },
+    { value: '阴天', icon: <Cloud size={20} /> },
     { value: '阴天', icon: <CloudFog size={20} /> },
     { value: '小雨', icon: <CloudDrizzle size={20} /> },
-    { value: '大雨', icon: <CloudRain size={20} /> },
+    { value: '雨天', icon: <CloudRain size={20} /> },
     { value: '雪天', icon: <Snowflake size={20} /> },
 ];
 
@@ -56,8 +56,8 @@ function OptionGroup<T extends string>({ title, options, currentValue, onChange 
                             onClick={() => onChange(opt.value)}
                             className={cn(
                                 'flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-2xl transition-all duration-300',
-                                isSelected 
-                                    ? 'bg-white/30 border border-white/40 text-white shadow-lg shadow-white/10' 
+                                isSelected
+                                    ? 'bg-white/30 border border-white/40 text-white shadow-lg shadow-white/10'
                                     : 'bg-white/5 border border-transparent text-white/50 hover:bg-white/10'
                             )}
                         >

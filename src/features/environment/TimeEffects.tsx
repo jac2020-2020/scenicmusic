@@ -8,7 +8,7 @@ export const TimeEffects: React.FC = () => {
     // 根据天气情况精细化调整天体透明度
     const getOpacityClass = () => {
         if (weather === '晴天') return 'opacity-100';
-        if (weather === '多云') return 'opacity-60 blur-[2px]';
+        if (weather === '阴天') return 'opacity-60 blur-[2px]';
         // 阴天、雨天、雪天时，天体（日月）被云层严重遮挡，仅保留微弱轮廓
         return 'opacity-10';
     };
@@ -16,7 +16,7 @@ export const TimeEffects: React.FC = () => {
     const opacityClass = getOpacityClass();
 
     // 阴雨天气（阴天、雨天、雪天）时星空不可见
-    const isOvercast = ['阴天', '大雨', '小雨', '雪天'].includes(weather);
+    const isOvercast = ['阴天', '雨天', '小雨', '雪天'].includes(weather);
 
     return (
         <div className={`absolute inset-0 pointer-events-none transition-all duration-[1500ms] ease-in-out ${opacityClass}`}>
@@ -32,14 +32,14 @@ export const TimeEffects: React.FC = () => {
                         className="absolute top-[25%] left-1/2 -translate-x-1/2 pointer-events-none"
                     >
                         {/* 外层大光晕 (大气层散射) */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full" 
-                             style={{ background: 'radial-gradient(circle, rgba(255,230,170,0.3) 0%, rgba(255,210,150,0.1) 40%, transparent 70%)', mixBlendMode: 'screen', filter: 'blur(20px)' }} />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full"
+                            style={{ background: 'radial-gradient(circle, rgba(255,230,170,0.3) 0%, rgba(255,210,150,0.1) 40%, transparent 70%)', mixBlendMode: 'screen', filter: 'blur(20px)' }} />
                         {/* 中层暖光 (太阳周围的高亮) */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160px] h-[160px] rounded-full" 
-                             style={{ background: 'radial-gradient(circle, rgba(255,240,190,0.7) 0%, rgba(255,220,150,0.2) 50%, transparent 80%)', mixBlendMode: 'screen', filter: 'blur(12px)' }} />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160px] h-[160px] rounded-full"
+                            style={{ background: 'radial-gradient(circle, rgba(255,240,190,0.7) 0%, rgba(255,220,150,0.2) 50%, transparent 80%)', mixBlendMode: 'screen', filter: 'blur(12px)' }} />
                         {/* 太阳实体核心 (柔和的发光球体) */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60px] h-[60px] rounded-full bg-[#FFFDF8]" 
-                             style={{ boxShadow: '0 0 30px 10px rgba(255, 235, 180, 0.9)', filter: 'blur(4px)' }} />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60px] h-[60px] rounded-full bg-[#FFFDF8]"
+                            style={{ boxShadow: '0 0 30px 10px rgba(255, 235, 180, 0.9)', filter: 'blur(4px)' }} />
                     </motion.div>
                 )}
 
@@ -56,14 +56,14 @@ export const TimeEffects: React.FC = () => {
                         className="absolute bottom-0 left-1/2 pointer-events-none"
                     >
                         {/* 外层漫反射晚霞 (染红天空) */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-[100%]" 
-                             style={{ background: 'radial-gradient(ellipse, rgba(255,180,160,0.4) 0%, rgba(220,140,140,0.15) 40%, transparent 70%)', mixBlendMode: 'screen', filter: 'blur(30px)' }} />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-[100%]"
+                            style={{ background: 'radial-gradient(ellipse, rgba(255,180,160,0.4) 0%, rgba(220,140,140,0.15) 40%, transparent 70%)', mixBlendMode: 'screen', filter: 'blur(30px)' }} />
                         {/* 中层火红光晕 (落日周围的强反光) */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full" 
-                             style={{ background: 'radial-gradient(circle, rgba(255,190,160,0.6) 0%, rgba(250,150,120,0.2) 50%, transparent 80%)', mixBlendMode: 'screen', filter: 'blur(20px)' }} />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full"
+                            style={{ background: 'radial-gradient(circle, rgba(255,190,160,0.6) 0%, rgba(250,150,120,0.2) 50%, transparent 80%)', mixBlendMode: 'screen', filter: 'blur(20px)' }} />
                         {/* 落日实体核心 (柔和发光球体) */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-[#FFF5F0]" 
-                             style={{ boxShadow: '0 0 50px 20px rgba(255, 170, 140, 0.7), inset 0 -10px 20px rgba(255,140,110,0.4)', filter: 'blur(6px)' }} />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-[#FFF5F0]"
+                            style={{ boxShadow: '0 0 50px 20px rgba(255, 170, 140, 0.7), inset 0 -10px 20px rgba(255,140,110,0.4)', filter: 'blur(6px)' }} />
                     </motion.div>
                 )}
 
