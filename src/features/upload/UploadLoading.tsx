@@ -3,6 +3,19 @@ import { motion } from 'framer-motion';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 import { DynamicBackground } from '@/features/environment/DynamicBackground';
 
+const seedFromString = (value: string) => {
+    let seed = 0;
+    for (let i = 0; i < value.length; i++) {
+        seed = (seed * 31 + value.charCodeAt(i)) >>> 0;
+    }
+    return seed;
+};
+
+const prand = (seed: number) => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+};
+
 interface UploadLoadingProps {
     isResolved: boolean;
     onReadyToContinue: () => void;
@@ -21,51 +34,57 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
 
     const floatingTextItems = useMemo(() => {
         const words: string[] = [weather, time, scene];
+        const baseSeed = seedFromString(words.join('|')) + 1000;
 
         const items = [];
         for (let i = 0; i < 28; i++) {
             const word = words[i % words.length];
-            const depth = Math.random();
+            const depth = prand(baseSeed + i * 29 + 1);
             const layer = depth < 0.38 ? 'back' : depth < 0.75 ? 'mid' : 'front';
             const layerConfig = {
                 back: {
-                    opacity: 0.04 + Math.random() * 0.08,
-                    blur: 3 + Math.random() * 3.5,
+                    opacity: 0.04 + prand(baseSeed + i * 29 + 2) * 0.08,
+                    blur: 3 + prand(baseSeed + i * 29 + 3) * 3.5,
                     brightness: 0.9,
                     shadow: 0,
                     zIndex: 1,
                 },
                 mid: {
-                    opacity: 0.14 + Math.random() * 0.16,
-                    blur: 1 + Math.random() * 1.5,
+                    opacity: 0.14 + prand(baseSeed + i * 29 + 4) * 0.16,
+                    blur: 1 + prand(baseSeed + i * 29 + 5) * 1.5,
                     brightness: 1,
                     shadow: 0.08,
                     zIndex: 2,
                 },
                 front: {
-                    opacity: 0.34 + Math.random() * 0.28,
-                    blur: 0.2 + Math.random() * 0.5,
+                    opacity: 0.34 + prand(baseSeed + i * 29 + 6) * 0.28,
+                    blur: 0.2 + prand(baseSeed + i * 29 + 7) * 0.5,
                     brightness: 1.08,
                     shadow: 0.16,
                     zIndex: 3,
                 },
             }[layer];
 
+            const startOnScreen = prand(baseSeed + i * 29 + 8) < 0.3;
+            const startY = startOnScreen
+                ? prand(baseSeed + i * 29 + 9) * 80
+                : -20 - prand(baseSeed + i * 29 + 10) * 50;
+
             items.push({
                 id: `${word}-${i}`,
                 text: word.split(''),
-                startY: Math.random() < 0.3 ? Math.random() * 80 : -20 - Math.random() * 50,
-                endY: 120 + Math.random() * 20,
-                startX: Math.random() * 90 + 5,
-                endX: (Math.random() - 0.5) * 5,
-                delay: Math.random() < 0.5 ? 0 : Math.random() * 3,
-                duration: Math.random() * 5 + 6 + (layer === 'back' ? 1.5 : 0),
+                startY,
+                endY: 120 + prand(baseSeed + i * 29 + 11) * 20,
+                startX: prand(baseSeed + i * 29 + 12) * 90 + 5,
+                endX: (prand(baseSeed + i * 29 + 13) - 0.5) * 5,
+                delay: prand(baseSeed + i * 29 + 14) < 0.5 ? 0 : prand(baseSeed + i * 29 + 15) * 3,
+                duration: prand(baseSeed + i * 29 + 16) * 5 + 6 + (layer === 'back' ? 1.5 : 0),
                 scale:
                     layer === 'back'
-                        ? 0.64 + Math.random() * 0.25
+                        ? 0.64 + prand(baseSeed + i * 29 + 17) * 0.25
                         : layer === 'mid'
-                            ? 0.82 + Math.random() * 0.2
-                            : 1.0 + Math.random() * 0.25,
+                            ? 0.82 + prand(baseSeed + i * 29 + 18) * 0.2
+                            : 1.0 + prand(baseSeed + i * 29 + 19) * 0.25,
                 baseOpacity: layerConfig.opacity,
                 blurPx: layerConfig.blur,
                 brightness: layerConfig.brightness,
@@ -113,8 +132,10 @@ export const UploadLoading: React.FC<UploadLoadingProps> = ({
         if (hasCompletedRef.current || !isResolved || !hasMinDuration) return;
 
         hasCompletedRef.current = true;
-        setProgress(100);
-        setIsExiting(true);
+        queueMicrotask(() => {
+            setProgress(100);
+            setIsExiting(true);
+        });
         const timer = window.setTimeout(() => {
             onReadyToContinue();
         }, 380);

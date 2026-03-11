@@ -67,7 +67,9 @@ export const useAudioPlayer = ({
 
     useEffect(() => {
         nextOpToken();
-        const audio = new Audio(src);
+        const audio = new Audio();
+        audio.crossOrigin = 'anonymous';
+        audio.src = src;
         audio.preload = 'auto';
         audio.loop = loop;
         audioRef.current = audio;

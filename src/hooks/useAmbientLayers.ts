@@ -23,6 +23,8 @@ const getPathFromSrc = (src: string): string => {
     }
 };
 
+const isAbsoluteUrl = (src: string): boolean => /^https?:\/\//i.test(src) || src.startsWith('file:');
+
 const pathsMatch = (current: string, incoming: string): boolean => {
     const norm = (p: string) => (p.startsWith('/') ? p : `/${p}`).toLowerCase().replace(/\/+/g, '/');
     return norm(current) === norm(incoming);
@@ -76,6 +78,8 @@ export const useAmbientLayers = () => {
         const createPair = () => {
             const a = new Audio();
             const b = new Audio();
+            a.crossOrigin = 'anonymous';
+            b.crossOrigin = 'anonymous';
             a.loop = true;
             b.loop = true;
             a.volume = 0;
@@ -112,8 +116,9 @@ export const useAmbientLayers = () => {
             const next = layer.active === 'A' ? b : a;
 
             const currentSrc = getPathFromSrc(current.src);
-            const newSrcPath = src.startsWith('/') ? src : `/${src}`;
-            if (pathsMatch(currentSrc, newSrcPath)) {
+            const newSrcPath = isAbsoluteUrl(src) ? src : (src.startsWith('/') ? src : `/${src}`);
+            const compareSrc = isAbsoluteUrl(newSrcPath) ? getPathFromSrc(newSrcPath) : newSrcPath;
+            if (pathsMatch(currentSrc, compareSrc)) {
                 if (current.paused) {
                     current.volume = targetVol;
                     const playPromise = current.play();

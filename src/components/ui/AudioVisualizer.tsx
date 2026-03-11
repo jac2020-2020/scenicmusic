@@ -5,17 +5,22 @@ interface AudioVisualizerProps {
     isPlaying: boolean;
 }
 
+const prand = (seed: number) => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+};
+
 export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ isPlaying }) => {
     const particles = useMemo(() => {
         return Array.from({ length: 16 }, (_, idx) => ({
             id: idx,
-            left: 8 + Math.random() * 84,
-            top: 45 + Math.random() * 42,
-            size: 5 + Math.random() * 10,
-            dx: (Math.random() - 0.5) * 36,
-            dy: -12 - Math.random() * 32,
-            duration: 8 + Math.random() * 12,
-            delay: Math.random() * 3.6,
+            left: 8 + prand(1009 + idx * 13) * 84,
+            top: 45 + prand(2003 + idx * 17) * 42,
+            size: 5 + prand(3001 + idx * 19) * 10,
+            dx: (prand(4001 + idx * 23) - 0.5) * 36,
+            dy: -12 - prand(5003 + idx * 29) * 32,
+            duration: 8 + prand(6007 + idx * 31) * 12,
+            delay: prand(7001 + idx * 37) * 3.6,
         }));
     }, []);
 

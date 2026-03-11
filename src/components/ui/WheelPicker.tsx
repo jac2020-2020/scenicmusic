@@ -148,7 +148,6 @@ export function WheelPicker<T extends string>({
         if (options.length === 0) return;
         const initialGlobal = (MID_CYCLE * safeBaseCount) + baseIndexFromValue;
         scrollToGlobalIndex(initialGlobal, 'auto', false);
-        setScrollTop(initialGlobal * ITEM_HEIGHT);
     }, [ITEM_HEIGHT, MID_CYCLE, baseIndexFromValue, safeBaseCount, scrollToGlobalIndex, options.length]);
 
     useEffect(() => {

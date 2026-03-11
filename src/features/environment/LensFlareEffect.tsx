@@ -47,7 +47,7 @@ export const LensFlareEffect: React.FC<LensFlareEffectProps> = ({ time }) => {
     useEffect(() => {
         if (time !== delayedTime) {
             // 当时间改变时，先让当前光晕淡出
-            setIsTransitioning(true);
+            queueMicrotask(() => setIsTransitioning(true));
             
             // 等待 1200ms (背景切换是1500ms，我们留出一点缓冲)，然后更新光晕位置和颜色并淡入
             const timer = setTimeout(() => {

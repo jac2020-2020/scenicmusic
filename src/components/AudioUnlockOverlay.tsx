@@ -17,7 +17,9 @@ export const AudioUnlockOverlay: React.FC = () => {
             }
 
             // 2. HTMLAudioElement 解锁：用真实文件播放 0 音量（data URI 在某些浏览器无效）
-            const a = new Audio('/audio/weather/sunny.mp3');
+            const a = new Audio();
+            a.crossOrigin = 'anonymous';
+            a.src = 'https://lonein-dev-1328000100.cos.ap-shanghai.myqcloud.com/audio/weather/sunny.mp3';
             a.volume = 0;
             const p = a.play();
             if (p) p.catch(() => {});

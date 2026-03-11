@@ -24,7 +24,7 @@ export const PlaybackStep = () => {
     const trackTitle = currentTrack?.name || 'Here';
     // const emotionTags = resolveEmotionTags({ weather, time, scene }); // 暂时移除未使用的变量
     const player = useAudioPlayer({
-        src: currentTrack?.audioUrl || '/audio/mood/Here.mp3',
+        src: currentTrack?.audioUrl || 'https://lonein-dev-1328000100.cos.ap-shanghai.myqcloud.com/audio/mood/Here.mp3',
         initialVolume: musicVolume,
         loop: playMode === 'single',
     });

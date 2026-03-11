@@ -25,7 +25,7 @@ const PLAYLIST_NAMES: Record<Weather, Record<Time, Record<Scene, string>>> = {
 };
 
 // 音乐文件基础路径
-const MUSIC_BASE_URL = '';
+const MUSIC_BASE_URL = 'https://lonein-dev-1328000100.cos.ap-shanghai.myqcloud.com';
 
 const SCENE_DIR_MAP: Record<Scene, string> = {
     '阅读': 'reading',

@@ -2,6 +2,11 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEnvironmentStore } from '@/store/useEnvironmentStore';
 
+const prand = (seed: number) => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+};
+
 export const TimeEffects: React.FC = () => {
     const { time, weather } = useEnvironmentStore();
 
@@ -105,20 +110,20 @@ export const TimeEffects: React.FC = () => {
                                 key={i}
                                 className="absolute rounded-full bg-white"
                                 style={{
-                                    width: Math.random() * 2 + 1 + 'px',
-                                    height: Math.random() * 2 + 1 + 'px',
-                                    top: Math.random() * 60 + '%', // 星星主要集中在上半部分
-                                    left: Math.random() * 100 + '%',
+                                    width: prand(1103 + i * 17) * 2 + 1 + 'px',
+                                    height: prand(2107 + i * 19) * 2 + 1 + 'px',
+                                    top: prand(3109 + i * 23) * 60 + '%',
+                                    left: prand(4109 + i * 29) * 100 + '%',
                                 }}
                                 animate={{
                                     opacity: [0.02, 0.25, 0.02],
                                     scale: [0.8, 1.1, 0.8],
                                 }}
                                 transition={{
-                                    duration: Math.random() * 4 + 3,
+                                    duration: prand(5107 + i * 31) * 4 + 3,
                                     repeat: Infinity,
                                     ease: 'easeInOut',
-                                    delay: Math.random() * 3,
+                                    delay: prand(6101 + i * 37) * 3,
                                 }}
                             />
                         ))}

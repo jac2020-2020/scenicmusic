@@ -1,6 +1,6 @@
 import type { Weather, Time, Scene } from '@/types/environment';
 
-const AUDIO_BASE = '/audio';
+const AUDIO_BASE = 'https://lonein-dev-1328000100.cos.ap-shanghai.myqcloud.com/audio';
 
 export const getWeatherAudioPath = (weather: Weather): string => {
     const map: Record<Weather, string> = {
